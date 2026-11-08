@@ -60,9 +60,10 @@ a.lk,.lk{background:none;border:0;color:#2563eb;font-weight:700;font-size:13px;p
 .split{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(220px,1fr);gap:12px;margin-bottom:12px;align-items:start}
 .fp{border:2px solid var(--bd);border-radius:14px;padding:12px 13px;background:#faf7f8}.fp h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;color:var(--mu);letter-spacing:.3px}
 .fr{padding:7px 9px;border-radius:9px;margin-bottom:5px;font-size:13px;font-weight:600;position:relative}.fr small{display:block;font-size:10.5px;color:var(--mu);font-weight:800;text-transform:uppercase;margin-bottom:2px}
-.fr.hi{background:#fffbeb;border:1.5px solid #f59e0b}.fr em{display:block;margin-top:3px;font-size:11px;font-style:normal;font-weight:800;color:#b45309}
+.fr.hh2{background:#fffbeb;border:1.5px solid #f59e0b}.fr em{display:block;margin-top:3px;font-size:11px;font-style:normal;font-weight:800;color:#b45309}
 .e{color:#dc2626;font-weight:800}
 @media(max-width:760px){.split{grid-template-columns:1fr}}
+.ps{width:100%;font-weight:600;font-size:13px;padding:8px 9px}.fp .sg{margin-top:4px}
 </style></head><body>
 <header><div><h1>Revisión de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
 <div class="main">
@@ -81,15 +82,18 @@ const AMB=['Nacional / sin ámbito territorial específico','Lima Metropolitana'
 const ORI=['Actividad oficial / declaración presidencial','Norma legal','Declaración de un ministro','Congreso de la República','Opinión y/o análisis','Denuncia o cuestionamiento','Comunicado oficial','Publicación en redes sociales','Encuestas','Autoridades subnacionales','Gremios empresariales'];
 const EJES=['Seguridad ciudadana','Defensa nacional','Política','Economía y finanzas','Trabajo y empleo','Salud','Educación','Transportes y comunicaciones','Vivienda, Construcción y Saneamiento','Energía y minas','Medio ambiente','Agricultura y desarrollo rural','Producción','Comercio Exterior y Turismo','Cultura','Inclusión social y poblaciones vulnerables','Mujer e igualdad de oportunidades','Justicia y derechos humanos','Relaciones exteriores','Gestión de riesgos y desastres','Corrupción e integridad pública'];
 const FLD={TONO:TO,EJE:EJES,ORIGEN:ORI,AMBITO:AMB};
-const LBL={TONO:'Criterio de imagen',EJE:'Eje de gestión',ORIGEN:'Origen de posicionamiento',AMBITO:'Ámbito geográfico'};
+const LBL={ETIQUETA:'Etiqueta',TONO:'Criterio de imagen',EJE:'Eje de gestión',ORIGEN:'Origen de posicionamiento',AMBITO:'Ámbito geográfico'};
 const RULES={
  cd:['Canales digitales (eliminar)','alta'],dup:['Duplicados','alta'],falt:['Faltan datos','alta'],val:['Opción mal escrita','alta'],
  sus:['Categoría dudosa','media'],res:['Resumen','media'],var:['Escrito distinto','media'],
  fec:['Fecha','alta'],out:['Valor atípico','media'],tit:['Titular','baja']};
 let USER='';try{USER=localStorage.getItem('usr')||''}catch(e){}
 if(!USER){USER=prompt('¿Tu nombre? (queda registrado en cada cambio)')||'anónimo';try{localStorage.setItem('usr',USER)}catch(e){}}
-let ROWS=[],TAGS=[],ISS=[],IGN=new Set(),UND=[],F='all',SHI=false,DONE=0,SHOW=40;
-try{IGN=new Set(JSON.parse(localStorage.getItem('lmp_ign')||'[]'))}catch(e){}
+let TAGSALL=[],ROWS=[],TAGS=[],ISS=[],IGN=new Set(),UND=[],F='all',SHI=false,DONE=0,SHOW=40;
+try{IGN=new Set(JSON.parse(localStorage.getItem('lmp_ign')||'[]').filter(k=>/^lmp:/.test(k)))}catch(e){}
+const hk=x=>{let a=5381,b=52711;for(let i=0;i<x.length;i++){const c=x.charCodeAt(i);a=((a<<5)+a+c)>>>0;b=((b<<5)^b^c)>>>0}return'lmp:'+a.toString(36)+b.toString(36)};
+async function syncIgn(){try{const j=await(await fetch(API+'?action=ign&key='+encodeURIComponent(KEY))).json(),srv=new Set((j&&j.keys||[]).filter(k=>/^lmp:/.test(k))),mine=[...IGN].filter(k=>!srv.has(k));srv.forEach(k=>IGN.add(k));saveIgn();if(mine.length)fetch(API,{method:'POST',body:JSON.stringify({key:KEY,user:USER,action:'ign',keys:mine})}).catch(()=>{})}catch(e){}}
+const pushIgn=k=>{fetch(API,{method:'POST',body:JSON.stringify({key:KEY,user:USER,action:'ign',keys:[k]})}).catch(()=>{})};
 const saveIgn=()=>{try{localStorage.setItem('lmp_ign',JSON.stringify([...IGN].slice(-3000)))}catch(e){}};
 /* ---------- utilidades ---------- */
 function pd(v){let d=null;if(v instanceof Date)d=v;else if(typeof v==='number'){const u=new Date((v-25569)*864e5);d=new Date(u.getUTCFullYear(),u.getUTCMonth(),u.getUTCDate(),u.getUTCHours(),u.getUTCMinutes())}else{const m=String(v||'').match(/(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);if(m)d=new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0))}return d&&!isNaN(d)?d:null}
@@ -164,6 +168,7 @@ function scores(r,f){
   AMB.slice(1).forEach(a=>{const k=nt(a);if(k.length<4)return;const re=new RegExp('(^| )'+k+'( |$)');if(re.test(T))add(a,9,k);else if(re.test(R))add(a,3,k);if(nk(a).length>=4&&md.includes(nk(a)))add(a,8,'medio «'+r.MEDIO+'»')});
   QCITY.forEach(([re,v])=>hit(new RegExp('(^| )(?:'+re.source+')( |$)'),7,2.5,v));
   if(/(^| )lima( |$)/.test(T))add('Lima Metropolitana',9,'lima');else if(/(^| )lima( |$)/.test(R))add('Lima Metropolitana',3,'lima');add(AMB[0],1.5)}
+ if(f==='ETIQUETA'){const txt=nt(r.TITULAR+' '+r.RESUMEN);TAGS.forEach(t=>{const k=nt(t).replace(/(\d)([a-z])/g,'$1 $2').replace(/([a-z])(\d)/g,'$1 $2');if(k.length<3)return;const cmp=k.replace(/ /g,'');if(cmp.length>=8&&txt.replace(/ /g,'').includes(cmp)){add(t,T.replace(/ /g,'').includes(cmp)?8:5,k);return}const ws=k.split(' ').filter(w=>w.length>2||/\d/.test(w));if(!ws.length)return;const has=w=>new RegExp('(^| )'+w.slice(0,Math.max(3,Math.min(w.length,6)))).test(txt);if(ws.length===1){if(ws[0].length>=4&&has(ws[0]))add(t,new RegExp('(^| )'+ws[0].slice(0,6)).test(T)?8:4,ws[0])}else if(ws.every(has))add(t,ws.every(w=>new RegExp('(^| )'+w.slice(0,6)).test(T))?8:5,ws.join(' '))})}
  return{sc,ev,top:Object.entries(sc).sort((a,b)=>b[1]-a[1])[0]};
 }
 function sugg(r,f){const s=scores(r,f);return s.top?{v:s.top[0],w:s.top[1],terms:s.ev[s.top[0]]||[],sc:s.sc}:null}
@@ -178,9 +183,9 @@ async function load(){
  try{
   const j=await(await fetch(API+'?action=list&key='+encodeURIComponent(KEY)+'&desde='+desde,{signal:ct.signal})).json();
   if(!j||j.error||!j.rows)throw new Error(j&&j.error?j.error:'sin respuesta');
-  ROWS=j.rows;TAGS=j.tags||[];
+  ROWS=j.rows;TAGS=j.tags||[];TAGSALL=TAGS.concat(j.arch||[]);FLD.ETIQUETA=TAGS;
   ROWS.forEach(r=>{r._d=pd(r.FECHA);r._del=String(r.ELIMINADA)==='1'});
-  $('#st').textContent=ROWS.length+' filas cargadas';detect();
+  await syncIgn();$('#st').textContent=ROWS.length+' filas cargadas';detect();
  }catch(e){$('#st').textContent='';alert('No se pudo cargar: '+(e.name==='AbortError'?'Google tardó demasiado. Reintenta con un periodo más corto.':e.message))}
  finally{clearTimeout(tt);$('#go').disabled=false}
 }
@@ -206,9 +211,9 @@ function detect(){
  const bad={};
  A.forEach(r=>{
   if(isV(r)){const miss=['TONO','EJE','ORIGEN','AMBITO'].filter(k=>!String(r[k]||'').trim());if(miss.length)add('falt','alta','Validada con '+miss.length+' dato'+(miss.length>1?'s':'')+' sin llenar',[r],{miss})}
-  Object.keys(FLD).forEach(k=>{const v=String(r[k]||'').trim();if(v&&FLD[k].indexOf(v)<0)(bad[k+'|'+v]=bad[k+'|'+v]||[]).push(r)});
-  if(isV(r))['EJE','ORIGEN','AMBITO'].forEach(k=>{const cur=String(r[k]||'').trim();if(!cur||FLD[k].indexOf(cur)<0)return;const s=sugg(r,k);if(!s||s.v===cur)return;
-   const need=k==='AMBITO'?7:6;if(s.w>=need&&(s.sc[cur]||0)<2)add('sus','media','«'+cur+'» podría estar mal en '+LBL[k].toLowerCase(),[r],{field:k,cur,sug:s.v,terms:s.terms,k:k+cur+s.v})});
+  Object.keys(FLD).forEach(k=>{const v=String(r[k]||'').trim();if(v&&(k==='ETIQUETA'?(TAGSALL.length&&TAGSALL.indexOf(v)<0):FLD[k].indexOf(v)<0))(bad[k+'|'+v]=bad[k+'|'+v]||[]).push(r)});
+  if(isV(r))['EJE','ORIGEN','AMBITO','ETIQUETA'].forEach(k=>{const cur=String(r[k]||'').trim(),et=k==='ETIQUETA';if(et){if(!TAGS.length||(cur&&TAGSALL.indexOf(cur)<0))return}else if(!cur||FLD[k].indexOf(cur)<0)return;const s=sugg(r,k);if(!s||s.v===cur)return;
+   const need=k==='AMBITO'?7:et?8:6;if(s.w>=need&&(s.sc[cur]||0)<2)add('sus','media',et&&!cur?'Podría llevar la etiqueta «'+s.v+'»':'«'+cur+'» podría estar mal en '+LBL[k].toLowerCase(),[r],{field:k,cur,sug:s.v,terms:s.terms,k:k+cur+s.v})});
  });
  Object.keys(bad).forEach(kv=>{const [k,v]=kv.split('|'),L=bad[kv],sg=(k==='ORIGEN'&&/^(nota de prensa|actividad oficial o declaraci)/i.test(v)?'Actividad oficial / declaración presidencial':'')||FLD[k].find(o=>nk(o)===nk(v))||FLD[k].find(o=>nk(o).startsWith(nk(v))&&nk(v).length>=4)||'';
   add('val','alta',LBL[k]+': «'+v+'» no existe en el formulario',L.slice(0,4),{field:k,val:v,all:L,sug:sg,k:k+v})});
@@ -239,15 +244,22 @@ function rank(x){const sc=r=>(isV(r)?4:0)+['TONO','EJE','ORIGEN','AMBITO','ETIQU
 let MODE='home',SK=new Set(),TOT=0,CUR=null,RF='all';
 const NAMES={cd:['📺','Canales digitales (no se monitorean)'],dup:['🔁','Posibles notas repetidas'],falt:['📝','Notas validadas con datos sin llenar'],val:['✏️','Opciones mal escritas'],sus:['🤔','Categorías que parecen equivocadas'],res:['📄','Resúmenes vacíos o raros'],var:['🔤','Cosas escritas de dos maneras'],fec:['📅','Fechas raras'],out:['📈','Montos raros'],tit:['🏷️','Titulares raros']};
 const ORDER=Object.keys(NAMES);
-const vis=()=>ISS.filter(x=>!IGN.has(x.key));
+const vis=()=>ISS.filter(x=>!IGN.has(hk(x.key)));
 const queue=()=>vis().filter(x=>(RF==='all'||x.rule===RF)&&!SK.has(x.key)).sort((a,b)=>ORDER.indexOf(a.rule)-ORDER.indexOf(b.rule));
 const byId=id=>ROWS.find(r=>r.ID===id);
 /* ---------- piezas ---------- */
 const TC={Positiva:'#dcfce7;color:#166534;border:1px solid #86efac',Neutra:'#fef9c3;color:#854d0e;border:1px solid #fde047',Negativa:'#fee2e2;color:#991b1b;border:1px solid #fca5a5'};
 const tonePill=v=>v?'<span class="tp" style="background:'+(TC[v]||'#f3f0f1')+'">'+esc(v)+'</span>':'<span class="e">sin criterio</span>';
-function fieldsPanel(r,hi){hi=hi||[];const row=(k,l,html)=>'<div class="fr'+(hi.indexOf(k)>-1?' hi':'')+'"><small>'+l+'</small><div>'+html+'</div>'+(hi.indexOf(k)>-1?'<em>← aquí</em>':'')+'</div>',v=k=>String(r[k]||'').trim(),t=k=>v(k)?esc(v(k)):'<span class="e">falta</span>';
- return'<div class="fp"><h4>Datos de la nota</h4>'+row('TONO','Criterio de imagen',v('TONO')?tonePill(v('TONO')):'<span class="e">falta</span>')+row('EJE','Eje de gestión',t('EJE'))+row('ORIGEN','Origen',t('ORIGEN'))+row('AMBITO','Ámbito',t('AMBITO'))+row('ETIQUETA','Etiqueta',v('ETIQUETA')?esc(v('ETIQUETA')):'<span style="color:#9ca3af">ninguna</span>')+'</div>'}
-const split=(r,o,hi)=>'<div class="split">'+noteCard(r,Object.assign({noF:1},o||{}))+fieldsPanel(r,hi)+'</div>';
+const PL={TONO:'Criterio de imagen',EJE:'Eje de gestión',ORIGEN:'Origen',AMBITO:'Ámbito',ETIQUETA:'Etiqueta'};
+const toneStyle=v=>TC[v]?'background:'+TC[v]:'';
+function fieldsPanel(r,hi,o){hi=hi||[];o=o||{};const v=k=>String(r[k]||'').trim(),lst={TONO:TO,EJE:EJES,ORIGEN:ORI,AMBITO:AMB,ETIQUETA:TAGS};
+ const row=k=>{let body;
+  if(o.edit){const cur=v(k),sel=(o.force&&o.force[k])||cur||(o.sugs&&o.sugs[k])||'',L=lst[k].slice();if(cur&&L.indexOf(cur)<0)L.unshift(cur);
+   body='<select class="ps" data-p="'+k+'" data-o="'+esc(cur)+'" style="'+(k==='TONO'?toneStyle(sel):'')+'"><option value="">'+(k==='ETIQUETA'?'(ninguna)':'— elegir —')+'</option>'+L.map(x=>'<option'+(x===sel?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select>'+(o.hints&&o.hints[k]?'<div class="sg">'+o.hints[k]+'</div>':'')}
+  else body=k==='TONO'?(v(k)?tonePill(v(k)):'<span class="e">falta</span>'):v(k)?esc(v(k)):k==='ETIQUETA'?'<span style="color:#9ca3af">ninguna</span>':'<span class="e">falta</span>';
+  const h=hi.indexOf(k)>-1;return'<div class="fr'+(h?' hh2':'')+'"><small>'+PL[k]+(h?' <em style="display:inline">← aquí</em>':'')+'</small><div>'+body+'</div></div>'};
+ return'<div class="fp"><h4>Datos de la nota'+(o.edit?' <span style="text-transform:none;font-weight:600">· puedes cambiarlos</span>':'')+'</h4>'+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].map(row).join('')+(o.edit&&o.btn!==false?'<button class="b o s" data-a="savepanel" style="width:100%;margin-top:4px">💾 Guardar cambios</button>':'')+'</div>'}
+const split=(r,o,hi,po)=>'<div class="split">'+noteCard(r,Object.assign({noF:1},o||{}))+fieldsPanel(r,hi,po)+'</div>';
 function noteCard(r,o){o=o||{};const em=k=>k==='TONO'&&String(r[k]||'').trim()?tonePill(r[k]):String(r[k]||'').trim()?'<span>'+esc(r[k])+'</span>':'<span class="e">sin '+({TONO:'criterio',EJE:'eje',ORIGEN:'origen',AMBITO:'ámbito'}[k])+'</span>';
  const res=String(r.RESUMEN||'').trim();
  return'<div class="nc'+(o.rec?' rec':'')+'"><div class="nm"><b>'+esc(r.MEDIO)+'</b><span>'+esc(r.TIPO)+' · '+fmtD(r)+'</span><span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+(o.rec?'<span class="bd r">Sugerida: la más completa</span>':'')+'</div>'+
@@ -280,22 +292,22 @@ function caseHTML(it){
   h='<h2>Estas filas son de canales digitales</h2><p class="sub">El monitoreo no incluye canales digitales ni redes. Son <b>'+it.rows.length+'</b>. Si quieres, puedes descartarlas todas de una vez.</p><div class="nts">'+it.rows.slice(0,6).map(r=>noteCard(r,{noF:1})).join('')+'</div>'+(it.rows.length>6?'<div class="hint">…y '+(it.rows.length-6)+' más.</div>':'')+
    '<div class="ac"><button class="b k big" data-a="cdall">Descartar las '+it.rows.length+'</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='falt'){
-  h='<h2>A esta nota le faltan datos</h2><p class="sub">Está <b>validada</b> pero no tiene: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Sin eso no sale bien en el dashboard.</p>'+split(r0,{},it.miss)+'<div class="fl">'+
-   it.miss.map(k=>{const s=k==='TONO'?null:sugg(r0,k),ok=s&&s.w>=(k==='AMBITO'?3:4);return'<label>'+LBL[k]+'<select data-k="'+k+'"><option value="">Elegir…</option>'+FLD[k].map(o=>'<option'+(ok&&o===s.v?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select><span class="sg">'+(k==='TONO'?'Léela y elige el criterio de imagen.':ok?'Sugerencia: <b>'+esc(s.v)+'</b>'+(s.terms.length?' (el texto menciona '+s.terms.map(t=>'«'+esc(t)+'»').join(', ')+')':''):'Sin sugerencia clara: elige según la nota.')+'</span></label>'}).join('')+'</div>'+
-   '<div class="ac"><button class="b k big" data-a="save">Guardar</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
+  const sugs={},hints={};it.miss.forEach(k=>{const x=k==='TONO'?null:sugg(r0,k),ok=x&&x.w>=(k==='AMBITO'?3:4);hints[k]=k==='TONO'?'Léela y elige el criterio de imagen.':ok?'Sugerido: <b>'+esc(x.v)+'</b>'+(x.terms.length?' (menciona '+x.terms.map(t=>'«'+esc(t)+'»').join(', ')+')':''):'Sin sugerencia clara: elige según la nota.';if(ok)sugs[k]=x.v});
+  h='<h2>A esta nota le faltan datos</h2><p class="sub">Está <b>validada</b> pero no tiene: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Completa lo que falta en el panel de la derecha (y cambia lo que quieras).</p>'+split(r0,{},it.miss,{edit:1,sugs,hints,btn:false})+
+   '<div class="ac"><button class="b k big" data-a="savepanel">Guardar</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='val'){
   h='<h2>Una opción está mal escrita</h2><p class="sub">En <b>'+LBL[it.field]+'</b> pusieron «<b>'+esc(it.val)+'</b>», pero esa opción no existe en el formulario ('+it.all.length+' fila'+(it.all.length>1?'s':'')+').</p>'+split(it.rows[0],{},[it.field])+(it.all.length>1?'<div class="hint">…y '+(it.all.length-1)+' más con lo mismo. Se corrigen todas juntas.</div>':'')+
    '<div class="fl"><label>¿Cuál es la opción correcta?<select data-k="'+it.field+'"><option value="">Elegir…</option>'+FLD[it.field].map(o=>'<option'+(o===it.sug?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="saveall">Corregir '+it.all.length+'</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='sus'){
-  h='<h2>¿Esta categoría está bien?</h2><p class="sub">Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero '+(it.terms.length?'el texto parece hablar de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).')+'</p>'+split(r0,{hl:hlTerms(r0.TITULAR,it.terms),hlr:hlTerms(r0.RESUMEN,it.terms)},[it.field])+
-   '<div class="fl"><label>Cambiar a<select data-k="'+it.field+'">'+[it.sug,...FLD[it.field].filter(o=>o!==it.sug)].map(o=>'<option>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="save">Cambiar</button><button class="b o big" data-a="ign">Está bien así</button></div>'+foot();
+  h='<h2>'+(it.cur?'¿Esta categoría está bien?':'¿Le falta una etiqueta?')+'</h2><p class="sub">'+(it.cur?'Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero ':'No tiene <b>etiqueta</b>, pero ')+(it.terms.length?'el texto parece hablar de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).')+'</p>'+split(r0,{hl:hlTerms(r0.TITULAR,it.terms),hlr:hlTerms(r0.RESUMEN,it.terms)},[it.field],{edit:1,force:{[it.field]:it.sug},btn:false,hints:{[it.field]:'Sugerido: <b>'+esc(it.sug)+'</b>'}})+
+   '<div class="ac"><button class="b k big" data-a="savepanel">Guardar cambio</button><button class="b o big" data-a="ign">Está bien así</button></div>'+foot();
  }else if(rule==='res'){
-  h='<h2>El resumen necesita revisión</h2><p class="sub">Problema: <b>'+esc(it.title.toLowerCase())+'</b>.</p>'+split(r0,{},[])+'<textarea data-k="RESUMEN" placeholder="Escribe el resumen aquí">'+esc(r0.RESUMEN)+'</textarea><div class="ac"><button class="b k big" data-a="saveres">Guardar resumen</button>'+btnLeave+'</div>'+foot();
+  h='<h2>El resumen necesita revisión</h2><p class="sub">Problema: <b>'+esc(it.title.toLowerCase())+'</b>.</p>'+split(r0,{},[],{edit:1})+'<textarea data-k="RESUMEN" placeholder="Escribe el resumen aquí">'+esc(r0.RESUMEN)+'</textarea><div class="ac"><button class="b k big" data-a="saveres">Guardar resumen</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='var'){
   h='<h2>Lo mismo está escrito de varias maneras</h2><p class="sub">En <b>'+esc(LBL[it.field]||it.field)+'</b> se cuenta por separado en los gráficos.'+(it.edit?' Elige la forma correcta y se unifican todas.':' Este campo se corrige en el Google Sheet; aquí solo te aviso.')+'</p><div class="nc">'+it.forms.map((f,j)=>(it.edit?'<label style="font-weight:700;display:block;margin:4px 0"><input type="radio" name="uf" value="'+esc(f[0])+'"'+(j?'':' checked')+'> ':'<div style="margin:4px 0">')+'«'+esc(f[0])+'» <span class="hint">'+f[1]+' fila'+(f[1]>1?'s':'')+'</span>'+(it.edit?'</label>':'</div>')).join('')+'</div><div class="ac">'+(it.edit?'<button class="b k big" data-a="unify">Unificar</button>':'')+'<button class="b o big" data-a="ign">'+(it.edit?'Dejar como está':'Entendido')+'</button></div>'+foot();
  }else{
   const ex=rule==='fec'?'Esta columna se corrige en el Google Sheet, no aquí.':rule==='out'?(it.why||''):'Solo es un aviso: corrígelo en el formulario o en el Sheet si hace falta.';
-  h='<h2>'+esc(it.title)+'</h2><p class="sub">'+esc(ex)+'</p>'+split(r0,{},[])+'<div class="ac"><button class="b o big" data-a="ign">Entendido, siguiente</button></div>';
+  h='<h2>'+esc(it.title)+'</h2><p class="sub">'+esc(ex)+'</p>'+split(r0,{},[],{edit:1})+'<div class="ac"><button class="b o big" data-a="ign">Entendido, siguiente</button></div>';
  }
  return'<div class="cs" data-k="'+esc(it.key)+'">'+h+'</div>';
 }
@@ -312,10 +324,10 @@ function draw(){
   A.innerHTML=bar+'<div class="tb"><button class="lk" data-a="home">← Volver al inicio</button><span>'+(RF==='all'?'':NAMES[RF][1]+' · ')+'Quedan '+Q.length+'</span></div><div class="pg"><i style="width:'+pc+'%"></i></div>'+caseHTML(it);bind();return}
  /* inicio */
  const bad=new Set();V.forEach(x=>{if(x.rule!=='cd')(x.all||x.rows).forEach(r=>bad.add(r.ID))});const pct=live.length?Math.max(0,Math.round(100*(1-bad.size/live.length))):100;
- const ig=ISS.filter(x=>IGN.has(x.key)).length;
+ const ig=ISS.filter(x=>IGN.has(hk(x.key))).length;
  let h=bar+'<div class="tiles"><div class="tl"><b>'+live.length.toLocaleString('es-PE')+'</b><span>Menciones revisadas</span></div><div class="tl"><b>'+V.length+'</b><span>Por revisar</span></div><div class="tl"><b>'+pct+'%</b><span>En buen estado</span></div></div>';
- if(!V.length)h+='<div class="hero"><h2>✅ Todo está bien</h2><p>No encontré nada que corregir en estas '+live.length.toLocaleString('es-PE')+' menciones.'+(ig?'<br>Hay '+ig+' caso'+(ig>1?'s':'')+' que dejaste como estaba.':'')+'</p>'+(ig?'<button class="b o" data-a="unign">Volver a mostrar los que dejé como están</button>':'')+'</div>';
- else{h+='<div class="hero"><h2>Encontré '+V.length+' cosa'+(V.length>1?'s':'')+' para revisar</h2><p>Te las muestro <b>una por una</b>, con una pregunta simple y botones claros. Todavía no se cambió nada.</p><button class="b big" data-a="start" data-r="all">Empezar la revisión</button></div><div class="ls">'+ORDER.filter(k=>cnt[k]).map(k=>'<div class="li"><div><b>'+NAMES[k][0]+' '+NAMES[k][1]+'</b><small>'+cnt[k]+' caso'+(cnt[k]>1?'s':'')+'</small></div><button class="b o s" data-a="start" data-r="'+k+'">Revisar solo esto</button></div>').join('')+'</div>'+(ig?'<button class="lk" data-a="unign">Mostrar de nuevo los '+ig+' que dejé como están</button>':'')+'<div><button class="lk" data-a="csv">Descargar lista de observaciones (CSV)</button></div>'}
+ if(!V.length)h+='<div class="hero"><h2>✅ Todo está bien</h2><p>No encontré nada que corregir en estas '+live.length.toLocaleString('es-PE')+' menciones.'+(ig?'<br>Hay '+ig+' caso'+(ig>1?'s':'')+' que dejaste como estaba.':'')+'</p>'+(ig?'<button class="b o" data-a="unign">Volver a mostrar (solo ahora) los que dejé como están</button>':'')+'</div>';
+ else{h+='<div class="hero"><h2>Encontré '+V.length+' cosa'+(V.length>1?'s':'')+' para revisar</h2><p>Te las muestro <b>una por una</b>, con una pregunta simple y botones claros. Todavía no se cambió nada.</p><button class="b big" data-a="start" data-r="all">Empezar la revisión</button></div><div class="ls">'+ORDER.filter(k=>cnt[k]).map(k=>'<div class="li"><div><b>'+NAMES[k][0]+' '+NAMES[k][1]+'</b><small>'+cnt[k]+' caso'+(cnt[k]>1?'s':'')+'</small></div><button class="b o s" data-a="start" data-r="'+k+'">Revisar solo esto</button></div>').join('')+'</div>'+(ig?'<button class="lk" data-a="unign">Volver a mostrar (solo ahora) los '+ig+' que dejé como están</button>':'')+'<div><button class="lk" data-a="csv">Descargar lista de observaciones (CSV)</button></div>'}
  A.innerHTML=h;bind();
 }
 let RGV='30';
@@ -346,6 +358,7 @@ const disc=(rows,desc)=>apply(rows.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),rows.
 $('#tu').onclick=undo;
 const closeV=()=>{$('#vw').hidden=true;$('#vf').src='about:blank';document.body.classList.remove('vo')};$('#vx').onclick=closeV;
 $('#hx').onclick=()=>{$('#hs').hidden=true};
+document.addEventListener('change',e=>{const t=e.target;if(t.classList&&t.classList.contains('ps')&&t.dataset.p==='TONO')t.setAttribute('style',toneStyle(t.value))});
 $('#hl').onclick=e=>{const b=e.target.closest('[data-u]');if(b){b.disabled=true;undoAt(+b.dataset.u)}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeV();$('#hs').hidden=true}});
 $('#app').addEventListener('click',async e=>{
@@ -354,14 +367,17 @@ $('#app').addEventListener('click',async e=>{
  if(a==='start'){RF=b.dataset.r;SK=new Set();MODE='review';TOT=queue().length;draw();window.scrollTo(0,0);return}
  if(a==='home'){MODE='home';draw();return}
  if(a==='again'){SK=new Set();TOT=queue().length;draw();return}
- if(a==='unign'){ISS.forEach(x=>IGN.delete(x.key));saveIgn();draw();return}
+ if(a==='unign'){ISS.forEach(x=>IGN.delete(hk(x.key)));saveIgn();draw();return}
  if(a==='csv'){exportCsv();return}
  if(!it)return;
  if(a==='skip'){SK.add(it.key);draw();window.scrollTo(0,0);return}
- if(a==='ign'){IGN.add(it.key);saveIgn();draw();window.scrollTo(0,0);return}
+ if(a==='ign'){const h=hk(it.key);IGN.add(h);saveIgn();pushIgn(h);draw();window.scrollTo(0,0);return}
  b.disabled=true;let ok=false;
  try{
   if(a==='keep'){const keep=it.rows.find(r=>r.ID===b.dataset.id),d=it.rows.filter(r=>r.ID!==b.dataset.id);ok=await disc(d,'Te quedaste con «'+keep.MEDIO+'» · se descartó '+d.length+' repetida'+(d.length>1?'s':''))}
+  else if(a==='savepanel'){const r=it.rows[0],f={},old={};c.querySelectorAll('.ps').forEach(sl=>{const k=sl.dataset.p,x=sl.value,o=sl.dataset.o;if(x!==o&&(x||k==='ETIQUETA')){f[k]=x;old[k]=r[k]??''}});
+   if(!Object.keys(f).length){alert('No cambiaste nada todavía.');return}
+   ok=await apply([{id:r.ID,set:f}],[{id:r.ID,set:old}],'Cambiado ('+Object.keys(f).map(k=>PL[k].toLowerCase()).join(', ')+') en «'+r.MEDIO+'»')}
   else if(a==='del'){const d=it.rows.filter(r=>r.ID===b.dataset.id);ok=await disc(d,'Descartada 1 nota repetida')}
   else if(a==='cdall'){ok=await disc(it.rows,'Descartadas '+it.rows.length+' filas de canales digitales')}
   else if(a==='save'||a==='saveall'||a==='saveres'){

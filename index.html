@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#C8102E">
+<title>Limpieza de datos | Monitoreo Presidencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C8102E;--dk:#8f0b21;--bg:#f6f2f3;--bd:#e5dcde;--tx:#1f1417;--mu:#6b5d61;--hi:#dc2626;--md:#d97706;--lo:#2563eb;--ok:#10b981}
+*{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:var(--tx);font-size:13px}
+header{background:linear-gradient(135deg,var(--red),var(--dk));color:#fff;padding:12px clamp(12px,2.2vw,44px);display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:4px solid #fff;box-shadow:0 2px 10px #0003}
+h1{margin:0;font-size:18px;font-weight:800;text-transform:uppercase;line-height:1.15}.sb{font-size:11px;opacity:.9;font-weight:600;margin-top:2px}
+#st{font-size:12px;font-weight:600;text-align:right}
+.main{padding:14px clamp(12px,2.2vw,44px) 90px}
+.bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.bar label{display:block;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:5px}
+select,input,textarea{padding:9px 10px;border:1px solid var(--bd);border-radius:8px;font-size:13px;background:#fff;color:var(--tx);outline:none;max-width:100%}
+select:focus,input:focus,textarea:focus{border-color:var(--red)}
+button{font-weight:700;cursor:pointer}
+.b{padding:10px 14px;border:0;border-radius:8px;font-size:12px;color:#fff;background:var(--red);text-transform:uppercase}.b.g{background:#6b5d61}.b.o{background:#fff;color:var(--tx);border:1px solid var(--bd)}.b.k{background:var(--ok)}.b.s{padding:8px 11px;font-size:11px}.b:disabled{opacity:.5;cursor:default}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.kt{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--red);border-radius:12px;padding:12px 14px}.kt span{font-size:10.5px;font-weight:800;color:var(--mu);text-transform:uppercase}.kt b{display:block;font-size:28px;font-weight:800;margin-top:4px;line-height:1}.kt small{color:var(--mu);font-weight:600}
+.kt.q{background:linear-gradient(135deg,var(--red),var(--dk));color:#fff;border:0}.kt.q span,.kt.q small{color:#fff}
+.ch{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cp{border:1px solid var(--bd);background:#fff;color:var(--mu);font-weight:700;font-size:12px;padding:8px 13px;border-radius:20px}.cp b{margin-left:4px;color:var(--tx)}.cp.on{background:var(--red);border-color:var(--red);color:#fff}.cp.on b{color:#fff}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,480px),1fr));gap:12px;align-items:start}
+.is{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;box-shadow:0 2px 8px #0001;border-top:4px solid var(--lo)}
+.is.alta{border-top-color:var(--hi)}.is.media{border-top-color:var(--md)}
+.ih{display:flex;justify-content:space-between;gap:8px;align-items:start;margin-bottom:8px}.ih h3{margin:0;font-size:13px;font-weight:800;line-height:1.3}
+.sv{font-size:10px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:10px;color:#fff;background:var(--lo);white-space:nowrap}.sv.alta{background:var(--hi)}.sv.media{background:var(--md)}
+.sub{color:var(--mu);font-size:12px;margin:0 0 8px;line-height:1.4}
+.rw{border:1px solid var(--bd);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:12px;line-height:1.35;display:flex;gap:8px;align-items:flex-start}
+.rw.keep{border-color:var(--ok);background:#ecfdf5}.rw.del{background:#fef2f2;border-color:#fecaca}
+.rw input[type=radio]{margin-top:3px;flex:none}.rw div{min-width:0}.rw b{font-weight:700}.rw .m{color:var(--mu);font-size:11px;font-weight:600}
+.rw .t{display:block;font-weight:600;overflow-wrap:anywhere}
+.bd{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px;background:#e5e7eb;color:#374151;margin-left:4px}.bd.v{background:#d1fae5;color:#065f46}.bd.p{background:#fef3c7;color:#92400e}
+.fx{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}.fx select{flex:1 1 170px}
+.fl{display:grid;gap:6px;margin-top:6px}.fl label{font-size:10.5px;font-weight:800;color:var(--mu);text-transform:uppercase;display:grid;gap:3px}.fl select{width:100%}
+textarea{width:100%;min-height:90px;resize:vertical;margin-top:4px}
+.ro{font-size:11px;color:var(--mu);font-weight:600;margin-top:6px}
+.em{text-align:center;padding:50px 10px;color:var(--mu);font-weight:600}.em b{display:block;font-size:42px;margin-bottom:6px}
+#tt{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#1f1417;color:#fff;padding:11px 16px;border-radius:12px;font-weight:600;display:none;z-index:50;max-width:92vw;align-items:center;gap:12px;box-shadow:0 6px 20px #0005}
+#tt button{background:#fff;color:#1f1417;border:0;border-radius:8px;padding:6px 10px;font-size:12px}
+.mo{display:block;width:100%;text-align:center;margin:14px 0}
+@media(max-width:700px){h1{font-size:14px}.kt b{font-size:24px}.b{flex:1}.bar>div{flex:1 1 100%}.bar select{width:100%}}
+</style></head><body>
+<header><div><h1>Limpieza de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
+<div class="main">
+<div class="bar">
+<div><label>Analizar</label><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select></div>
+<button class="b" id="go">Analizar</button>
+<button class="b o" id="ex">Exportar reporte (CSV)</button>
+<button class="b o" id="ig">Ver ignorados</button>
+</div>
+<div class="kp" id="kp"></div>
+<div class="ch" id="ch"></div>
+<div class="gr" id="gr"><div class="em"><b>🧹</b>Elige el periodo y pulsa Analizar.</div></div>
+</div>
+<div id="tt"><span id="tm"></span><button id="tu" style="display:none">↩ Deshacer</button></div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbzAQjXeJMaPzxnyxGYkLaufqw7sl0rLO1h-urvSPTbyJ3GEpsGExp8KMg2n3UYzFdnQ/exec',KEY='CAMILA';
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TO=['Positiva','Neutra','Negativa'];
+const AMB=['Nacional / sin ámbito territorial específico','Lima Metropolitana','Lima Provincias','Callao','Amazonas','Áncash','Apurímac','Arequipa','Ayacucho','Cajamarca','Cusco','Huancavelica','Huánuco','Ica','Junín','La Libertad','Lambayeque','Loreto','Madre de Dios','Moquegua','Pasco','Piura','Puno','San Martín','Tacna','Tumbes','Ucayali','Extranjero'];
+const ORI=['Actividad oficial o declaración presidencial','Norma legal','Declaración de un ministro','Congreso de la República','Opinión y/o análisis','Denuncia o cuestionamiento','Nota de prensa','Comunicado oficial','Publicación en redes sociales','Encuestas','Autoridades subnacionales','Gremios empresariales'];
+const EJES=['Seguridad ciudadana','Defensa nacional','Política','Economía y finanzas','Trabajo y empleo','Salud','Educación','Transportes y comunicaciones','Vivienda, Construcción y Saneamiento','Energía y minas','Medio ambiente','Agricultura y desarrollo rural','Producción','Comercio Exterior y Turismo','Cultura','Inclusión social y poblaciones vulnerables','Mujer e igualdad de oportunidades','Justicia y derechos humanos','Relaciones exteriores','Gestión de riesgos y desastres','Corrupción e integridad pública'];
+const FLD={TONO:TO,EJE:EJES,ORIGEN:ORI,AMBITO:AMB};
+const RULES={
+ dup:['Titulares repetidos','alta'],url:['URL repetida','alta'],falt:['Campos sin llenar','alta'],val:['Valores fuera de lista','alta'],
+ res:['Resúmenes con problemas','media'],amb:['Ámbito inusual para el medio','baja'],var:['Variantes de escritura','media'],
+ fec:['Fechas inválidas','alta'],out:['Valores atípicos','media'],tit:['Titulares sospechosos','baja'],pen:['Pendientes antiguas','media']};
+let USER='';try{USER=localStorage.getItem('usr')||''}catch(e){}
+if(!USER){USER=prompt('¿Tu nombre? (queda registrado en cada cambio)')||'anónimo';try{localStorage.setItem('usr',USER)}catch(e){}}
+let ROWS=[],TAGS=[],ISS=[],IGN=new Set(),UND=[],F='all',SHI=false,DONE=0,SHOW=60;
+try{IGN=new Set(JSON.parse(localStorage.getItem('lmp_ign')||'[]'))}catch(e){}
+const saveIgn=()=>{try{localStorage.setItem('lmp_ign',JSON.stringify([...IGN].slice(-3000)))}catch(e){}};
+/* ---------- utilidades ---------- */
+function pd(v){let d=null;if(v instanceof Date)d=v;else if(typeof v==='number'){const u=new Date((v-25569)*864e5);d=new Date(u.getUTCFullYear(),u.getUTCMonth(),u.getUTCDate(),u.getUTCHours(),u.getUTCMinutes())}else{const m=String(v||'').match(/(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);if(m)d=new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0))}return d&&!isNaN(d)?d:null}
+const p2=n=>String(n).padStart(2,'0'),ymd=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const ac=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const nt=s=>ac(s).replace(/[^a-z0-9]+/g,' ').trim();
+const nk=s=>ac(s).replace(/[^a-z0-9]/g,'');
+const mkey=s=>ac(s).replace(/^www\./,'').replace(/\.(com|pe|net|org|gob|edu|info|tv|co|es)\b/g,'').replace(/[^a-z0-9]/g,'');
+const nu=u=>String(u||'').trim().split('?')[0].split('#')[0].replace(/\/+$/,'').toLowerCase();
+function simT(a,b){if(!a||!b)return false;if(a===b)return true;const s=a.length<=b.length?a:b,l=a.length<=b.length?b:a;if(s.length>=20&&l.indexOf(s)>-1)return true;const wa=a.split(' ').filter(w=>w.length>2),wb=b.split(' ').filter(w=>w.length>2);if(wa.length<4||wb.length<4)return false;const sb={};wb.forEach(w=>sb[w]=1);const i=wa.filter(w=>sb[w]).length,u=new Set(wa.concat(wb)).size;return i/u>=.7}
+const mcomp=(x,y)=>x&&y&&(x===y||(x.length>=5&&y.length>=5&&(x.indexOf(y)>-1||y.indexOf(x)>-1)));
+const fmtD=r=>r._d?p2(r._d.getDate())+'/'+p2(r._d.getMonth()+1)+' '+p2(r._d.getHours())+':'+p2(r._d.getMinutes()):'sin fecha';
+const isV=r=>String(r.ESTADO)==='Validada';
+const q=(a,p)=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.min(s.length-1,Math.floor(p*(s.length-1)))]:0};
+function toast(m,undo){$('#tm').textContent=m;$('#tu').style.display=undo?'':'none';$('#tt').style.display='flex';clearTimeout(toast.t);toast.t=setTimeout(()=>$('#tt').style.display='none',undo?12000:3500)}
+/* ---------- carga ---------- */
+async function load(){
+ const days=+$('#rg').value,desde=days?ymd(new Date(Date.now()-days*864e5)):'';
+ $('#go').disabled=true;$('#st').textContent='Cargando…';
+ const ct=new AbortController(),tt=setTimeout(()=>ct.abort(),90000);
+ try{
+  const j=await(await fetch(API+'?action=list&key='+encodeURIComponent(KEY)+'&desde='+desde,{signal:ct.signal})).json();
+  if(!j||j.error||!j.rows)throw new Error(j&&j.error?j.error:'sin respuesta');
+  ROWS=j.rows;TAGS=j.tags||[];
+  ROWS.forEach(r=>{r._d=pd(r.FECHA);r._del=String(r.ELIMINADA)==='1'});
+  $('#st').textContent=ROWS.length+' filas cargadas';detect();
+ }catch(e){$('#st').textContent='';alert('No se pudo cargar: '+(e.name==='AbortError'?'Google tardó demasiado. Reintenta con un periodo más corto.':e.message))}
+ finally{clearTimeout(tt);$('#go').disabled=false}
+}
+/* ---------- detección ---------- */
+function detect(){
+ const A=ROWS.filter(r=>!r._del),I=[],byId={};A.forEach(r=>byId[r.ID]=r);
+ const add=(rule,sev,title,sub,rows,extra)=>{const ids=rows.map(r=>r.ID).sort().join(',');I.push(Object.assign({rule,sev,title,sub,rows,key:rule+'|'+(extra&&extra.k||'')+'|'+ids},extra||{}))};
+ const inDup=new Set();
+ /* 1. titulares repetidos (mismo día, medio compatible, titular similar) */
+ const day={};A.forEach(r=>{if(r._d)(day[ymd(r._d)]=day[ymd(r._d)]||[]).push(r)});
+ Object.values(day).forEach(L=>{
+  const n=L.length,P=L.map((_,i)=>i),f=i=>{while(P[i]!==i)i=P[i]=P[P[i]];return i},T=L.map(r=>nt(r.TITULAR)),M=L.map(r=>mkey(r.MEDIO));
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(mcomp(M[i],M[j])&&simT(T[i],T[j]))P[f(i)]=f(j);
+  const g={};L.forEach((r,i)=>(g[f(i)]=g[f(i)]||[]).push(r));
+  Object.values(g).filter(x=>x.length>1).forEach(x=>{x.forEach(r=>inDup.add(r.ID));add('dup','alta','Posible duplicado ('+x.length+' filas)','Mismo medio y mismo día con titular casi igual. La primera se queda; las marcadas pasan a Descartadas (se puede deshacer).',rank(x))});
+ });
+ /* 2. URL repetida */
+ const um={};A.forEach(r=>{const u=nu(r.URL);if(/^https?:\/\//.test(u)&&u.length>20)(um[u]=um[u]||[]).push(r)});
+ Object.values(um).filter(x=>x.length>1&&!x.every(r=>inDup.has(r.ID))).forEach(x=>{x.forEach(r=>inDup.add(r.ID));add('url','alta','La misma URL aparece en '+x.length+' filas','Una URL solo debería tener una mención.',rank(x))});
+ /* 3. campos sin llenar en validadas  &  4. valores fuera de lista */
+ const bad={};
+ A.forEach(r=>{
+  if(!isV(r))return;const miss=['TONO','EJE','ORIGEN','AMBITO'].filter(k=>!String(r[k]||'').trim());
+  if(miss.length)add('falt','alta','Validada con campos vacíos: '+miss.map(k=>k.toLowerCase()).join(', '),'Completa lo que falta para que cuente en el dashboard.',[r],{miss});
+  Object.keys(FLD).forEach(k=>{const v=String(r[k]||'').trim();if(v&&FLD[k].indexOf(v)<0)(bad[k+'|'+v]=bad[k+'|'+v]||[]).push(r)});
+ });
+ Object.keys(bad).forEach(kv=>{const [k,v]=kv.split('|'),L=bad[kv],sug=FLD[k].find(o=>nk(o)===nk(v))||FLD[k].find(o=>nk(o).startsWith(nk(v))&&nk(v).length>=4)||'';
+  add('val','alta',k+': «'+v+'» no está en la lista ('+L.length+' filas)','Escribe distinto a las opciones del formulario y no se agrupa en los gráficos.',L.slice(0,4),{field:k,val:v,all:L,sug,k:k+v})});
+ /* 5. resúmenes */
+ const rs={};A.forEach(r=>{const t=nt(r.RESUMEN);if(t.length>=40)(rs[t]=rs[t]||[]).push(r)});
+ const rdup=new Set();Object.values(rs).forEach(x=>{if(x.length>1&&new Set(x.map(r=>nt(r.TITULAR).slice(0,40))).size>1)x.forEach(r=>rdup.add(r.ID))});
+ A.forEach(r=>{const t=String(r.RESUMEN||'').trim();let m='';
+  if(!t)m=isV(r)?'Resumen vacío':'';else if(t.length<40)m='Resumen muy corto ('+t.length+' caracteres)';else if(nt(t)===nt(r.TITULAR))m='El resumen es igual al titular';else if(rdup.has(r.ID))m='Mismo resumen en otra nota con distinto titular';
+  if(m)add('res',!t?'alta':'media',m,'Edita el resumen aquí mismo.',[r])});
+ /* 6. ámbito inusual por medio */
+ const ms={};A.forEach(r=>{const k=mkey(r.MEDIO),a=String(r.AMBITO||'').trim();if(k&&a){const o=ms[k]=ms[k]||{n:0,c:{}};o.n++;o.c[a]=(o.c[a]||0)+1}});
+ A.forEach(r=>{const o=ms[mkey(r.MEDIO)],a=String(r.AMBITO||'').trim();if(!o||o.n<8||!a)return;const top=Object.entries(o.c).sort((x,y)=>y[1]-x[1])[0];if(top[1]/o.n>=.85&&a!==top[0]&&o.c[a]<=2)add('amb','baja','«'+r.MEDIO+'»: ámbito «'+a+'» (casi siempre «'+top[0]+'»)','Revisa si es un error de selección. Si es correcto, ignóralo.',[r],{sug:top[0],k:'a'})});
+ /* 7. variantes de escritura */
+ ['TIPO','MEDIO','PROGRAMA','SECCION','TIER','ETIQUETA'].forEach(k=>{const g={};A.forEach(r=>{const v=String(r[k]||'').trim();if(v){const c=nk(k==='MEDIO'?mkey(v):v);if(c)(g[c]=g[c]||{})[v]=(g[c][v]||0)+1}});
+  Object.values(g).forEach(o=>{const ks=Object.keys(o);if(ks.length<2)return;ks.sort((a,b)=>o[b]-o[a]);const rows=A.filter(r=>ks.indexOf(String(r[k]||'').trim())>-1);add('var','media',k+': '+ks.length+' formas de escribir lo mismo','Se cuentan por separado en los gráficos.',rows.slice(0,5),{field:k,forms:ks.map(s=>[s,o[s]]),all:rows,k:k+ks.join('|'),edit:k==='ETIQUETA'})})});
+ /* 8. fechas */
+ const now=Date.now();
+ ROWS.filter(r=>!r._del).forEach(r=>{let m='';if(!r._d)m='Fecha ilegible: «'+r.FECHA+'»';else if(r._d.getTime()>now+36e5)m='Fecha en el futuro';else if(r._d.getFullYear()<2025)m='Fecha muy antigua';if(m)add('fec','alta',m,'Se corrige directamente en el Google Sheet (esta columna no es editable desde aquí).',[r],{ro:1})});
+ /* 9. outliers de audiencia/costo por tipo */
+ [['AUDIENCIA','Audiencia'],['COSTO','Costo']].forEach(([k,l])=>{const g={};A.forEach(r=>{const v=+r[k];if(v<0)add('out','media',l+' negativa: '+v,'No tiene sentido un valor negativo.',[r],{ro:1,k:k+'neg'});else if(v>0)(g[r.TIPO||'?']=g[r.TIPO||'?']||[]).push([v,r])});
+  Object.entries(g).forEach(([t,L])=>{if(L.length<10)return;const vs=L.map(x=>x[0]),q1=q(vs,.25),q3=q(vs,.75),hi=q3+3*(q3-q1);L.forEach(([v,r])=>{if(v>hi&&v>q3*3)add('out','media',l+' atípica en '+t+': '+v.toLocaleString('es-PE'),'Típico en este tipo de medio: hasta '+Math.round(q3).toLocaleString('es-PE')+'. Verifica que no sobren ceros.',[r],{ro:1,k:k})})})});
+ /* 10. titulares */
+ A.forEach(r=>{const t=String(r.TITULAR||'').trim();let m='';if(t.length<15)m='Titular muy corto';else if(t.length>250)m='Titular demasiado largo ('+t.length+')';else{const L=t.replace(/[^A-Za-zÁÉÍÓÚÑ]/g,'');if(L.length>25&&L.replace(/[^A-ZÁÉÍÓÚÑ]/g,'').length/L.length>.8)m='Titular todo en mayúsculas'}if(m)add('tit','baja',m,'Solo reporte.',[r],{ro:1})});
+ /* 11. pendientes antiguas */
+ A.forEach(r=>{if(!isV(r)&&r._d&&now-r._d.getTime()>3*864e5)add('pen','media','Sin validar hace '+Math.floor((now-r._d.getTime())/864e5)+' días','Quedó pendiente; valídala o descártala en el formulario.',[r],{ro:1})});
+ ISS=I;draw();
+}
+function rank(x){const sc=r=>(isV(r)?4:0)+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].filter(k=>String(r[k]||'').trim()).length+(/lima/i.test(String(r.REGION||'')+' '+r.MEDIO)?1:0);return x.slice().sort((a,b)=>sc(b)-sc(a)||(a._d||0)-(b._d||0))}
+/* ---------- pintado ---------- */
+const sel=(k,v,l,opts)=>'<label>'+l+'<select data-k="'+k+'"><option value="">Elegir…</option>'+opts.map(o=>'<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select></label>';
+function rowH(r,extra,cls,radio){return'<div class="rw '+(cls||'')+'">'+(radio||'')+'<div><span class="m"><b>'+esc(r.MEDIO)+'</b> · '+esc(r.TIPO)+' · '+fmtD(r)+'<span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+(extra||'')+'</span><span class="t">'+esc(r.TITULAR)+'</span></div></div>'}
+function card(it,i){
+ const [,sv]=[0,it.sev];let b='',ign='<button class="b o s" data-a="ign">'+(IGN.has(it.key)?'Dejar de ignorar':'Ignorar')+'</button>';
+ if(it.rule==='dup'||it.rule==='url'){
+  const big=it.rows.length>5,sh=it.rows.slice(0,12);
+  b=(big?'<div class="ro" style="color:var(--hi);margin:0 0 8px">Grupo grande: puede mezclar notas distintas con titulares parecidos. Marca solo las que de verdad sobran.</div>':'')+sh.map((r,j)=>rowH(r,'','',(j?'<input type="checkbox" class="dx" value="'+esc(r.ID)+'"'+(big?'':' checked')+'>':'<span class="bd v" style="margin:2px 0 0;flex:none">Se queda</span>'))).join('')+(it.rows.length>12?'<div class="ro">…y '+(it.rows.length-12)+' más (descarta estas primero y vuelve a analizar)</div>':'')+'<div class="fx"><button class="b s" data-a="disc">Descartar las marcadas</button>'+ign+'</div>';
+ }else if(it.rule==='falt'){
+  b=rowH(it.rows[0])+'<div class="fl">'+it.miss.map(k=>sel(k,'',k==='AMBITO'?'Ámbito':k==='ORIGEN'?'Origen':k==='EJE'?'Eje de gestión':'Criterio de imagen',FLD[k])).join('')+'</div><div class="fx"><button class="b k s" data-a="set">Guardar</button>'+ign+'</div>';
+ }else if(it.rule==='val'){
+  b=it.rows.map(r=>rowH(r)).join('')+(it.all.length>4?'<div class="ro">…y '+(it.all.length-4)+' más</div>':'')+'<div class="fx"><select data-k="'+it.field+'"><option value="">Corregir a…</option>'+FLD[it.field].map(o=>'<option'+(o===it.sug?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select><button class="b k s" data-a="setall">Corregir '+it.all.length+'</button>'+ign+'</div>';
+ }else if(it.rule==='res'){
+  b=rowH(it.rows[0])+'<textarea data-k="RESUMEN">'+esc(it.rows[0].RESUMEN)+'</textarea><div class="fx"><button class="b k s" data-a="res">Guardar resumen</button>'+ign+'</div>';
+ }else if(it.rule==='amb'){
+  b=rowH(it.rows[0])+'<div class="fx"><select data-k="AMBITO">'+[it.sug,...AMB.filter(a=>a!==it.sug)].map(o=>'<option>'+esc(o)+'</option>').join('')+'</select><button class="b k s" data-a="set">Cambiar ámbito</button>'+ign+'</div>';
+ }else if(it.rule==='var'){
+  b='<div class="rw"><div>'+it.forms.map((f,j)=>(it.edit?'<label style="display:block;font-weight:700"><input type="radio" name="k'+i+'" value="'+esc(f[0])+'"'+(j?'':' checked')+'> ':'<div>')+'«'+esc(f[0])+'» <span class="m">'+f[1]+' filas</span>'+(it.edit?'</label>':'</div>')).join('')+'</div></div>'+
+  (it.edit?'<div class="fx"><button class="b k s" data-a="unify">Unificar en la marcada</button>'+ign+'</div>':'<div class="ro">Solo reporte: este campo se corrige en el Google Sheet.</div><div class="fx">'+ign+'</div>');
+ }else{b=it.rows.map(r=>rowH(r)).join('')+'<div class="ro">Solo reporte.</div><div class="fx">'+ign+'</div>'}
+ return'<div class="is '+sv+'" data-i="'+i+'"><div class="ih"><h3>'+esc(it.title)+'</h3><span class="sv '+sv+'">'+sv+'</span></div><p class="sub">'+esc(it.sub)+'</p>'+b+'</div>';
+}
+function draw(){
+ const A=ROWS.filter(r=>!r._del),vis=ISS.filter(x=>SHI?IGN.has(x.key):!IGN.has(x.key)),cnt={};vis.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
+ const bad=new Set();vis.filter(x=>!SHI).forEach(x=>(x.all||x.rows).forEach(r=>bad.add(r.ID)));const pct=A.length?Math.round(100*(1-bad.size/A.length)):100;
+ const hi=vis.filter(x=>x.sev==='alta').length;
+ $('#kp').innerHTML='<div class="kt q"><span>Calidad de los datos</span><b>'+pct+'%</b><small>filas sin observaciones</small></div><div class="kt"><span>Filas analizadas</span><b>'+A.length.toLocaleString('es-PE')+'</b><small>'+(ROWS.length-A.length)+' ya descartadas</small></div><div class="kt" style="border-left-color:var(--hi)"><span>Gravedad alta</span><b>'+hi+'</b><small>conviene corregir ya</small></div><div class="kt" style="border-left-color:var(--md)"><span>Observaciones</span><b>'+vis.length+'</b><small>en total</small></div><div class="kt" style="border-left-color:var(--ok)"><span>Resueltas en esta sesión</span><b>'+DONE+'</b><small>cambios guardados</small></div>';
+ $('#ch').innerHTML='<button class="cp'+(F==='all'?' on':'')+'" data-f="all">Todas<b>'+vis.length+'</b></button>'+Object.keys(RULES).filter(k=>cnt[k]).map(k=>'<button class="cp'+(F===k?' on':'')+'" data-f="'+k+'">'+RULES[k][0]+'<b>'+cnt[k]+'</b></button>').join('');
+ const order={alta:0,media:1,baja:2},L=vis.filter(x=>F==='all'||x.rule===F).sort((a,b)=>order[a.sev]-order[b.sev]);
+ const ix=x=>ISS.indexOf(x);
+ $('#gr').innerHTML=L.length?L.slice(0,SHOW).map(x=>card(x,ix(x))).join('')+(L.length>SHOW?'<button class="b o mo" id="mo" style="grid-column:1/-1">Mostrar más ('+(L.length-SHOW)+')</button>':''):'<div class="em" style="grid-column:1/-1"><b>✨</b>'+(ROWS.length?(SHI?'No hay observaciones ignoradas.':'Sin observaciones en esta categoría.'):'Elige el periodo y pulsa Analizar.')+'</div>';
+ $('#ig').textContent=SHI?'Ver pendientes':'Ver ignorados ('+ISS.filter(x=>IGN.has(x.key)).length+')';
+}
+/* ---------- guardar cambios ---------- */
+async function apply(items,inv,desc,conf){
+ if(!items.length)return false;
+ if(items.length>15&&!confirm(desc+'\n\nSe modificarán '+items.length+' filas. ¿Continuar?'))return false;
+ let fall=[];
+ try{
+  for(let i=0;i<items.length;i+=40){
+   const ch=items.slice(i,i+40),ct=new AbortController(),tt=setTimeout(()=>ct.abort(),45000);
+   let j;try{j=await(await fetch(API,{method:'POST',body:JSON.stringify({key:KEY,user:USER,action:'batch',items:ch}),signal:ct.signal})).json()}finally{clearTimeout(tt)}
+   if(!j||j.error)throw new Error(j?j.error:'sin respuesta');fall=fall.concat(j.fallos||[]);
+  }
+ }catch(e){alert('No se pudo guardar ('+(e.name==='AbortError'?'Google tardó demasiado':e.message)+'). Nada se perdió; puedes reintentar.');return false}
+ const ok=new Set(fall),byId={};ROWS.forEach(r=>byId[r.ID]=r);
+ items.forEach(it=>{if(ok.has(it.id))return;const r=byId[it.id];if(!r)return;Object.keys(it.set).forEach(k=>{r[k]=it.set[k]});r._del=String(r.ELIMINADA)==='1'});
+ const good=items.filter(it=>!ok.has(it.id)),ginv=inv.filter(it=>!ok.has(it.id));
+ DONE+=good.length;UND.push({inv:ginv,desc});detect();
+ toast(fall.length?'✓ '+good.length+' guardadas · '+fall.length+' no se pudieron aplicar':'✓ '+desc,true);return true;
+}
+async function undo(){const u=UND.pop();if(!u)return;$('#tt').style.display='none';
+ const r=await apply(u.inv,[],'Deshecho: '+u.desc);if(r){UND.pop();DONE=Math.max(0,DONE-u.inv.length*2);toast('↩ Deshecho: '+u.desc)}else UND.push(u)}
+/* ---------- eventos ---------- */
+$('#go').onclick=load;$('#tu').onclick=undo;
+$('#ig').onclick=()=>{SHI=!SHI;F='all';draw()};
+$('#ch').onclick=e=>{const b=e.target.closest('[data-f]');if(b){F=b.dataset.f;SHOW=60;draw()}};
+$('#gr').addEventListener('click',async e=>{
+ if(e.target.id==='mo'){SHOW+=60;draw();return}
+ const b=e.target.closest('[data-a]');if(!b)return;const c=b.closest('.is'),it=ISS[+c.dataset.i];if(!it)return;const a=b.dataset.a,val=k=>{const s=c.querySelector('[data-k="'+k+'"]');return s?s.value:''};
+ if(a==='ign'){IGN.has(it.key)?IGN.delete(it.key):IGN.add(it.key);saveIgn();draw();return}
+ b.disabled=true;let ok=false;
+ try{
+  if(a==='disc'){const d=[...c.querySelectorAll('.dx:checked')].map(x=>it.rows.find(r=>r.ID===x.value)).filter(Boolean);if(!d.length){alert('Marca al menos una fila para descartar.');return}
+   ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+' repetida'+(d.length>1?'s':''))}
+  else if(a==='set'||a==='res'||a==='setall'){
+   const f={};if(a==='res'){const t=val('RESUMEN').trim();if(!t){alert('Escribe el resumen.');return}f.RESUMEN=t}
+   else if(a==='set'&&it.rule==='falt'){it.miss.forEach(k=>{if(val(k))f[k]=val(k)});if(!Object.keys(f).length){alert('Elige al menos un valor.');return}}
+   else{const k=it.rule==='amb'?'AMBITO':it.field,v=val(k);if(!v){alert('Elige el valor correcto.');return}f[k]=v}
+   const rows=a==='setall'?it.all:it.rows;
+   ok=await apply(rows.map(r=>({id:r.ID,set:f})),rows.map(r=>({id:r.ID,set:Object.fromEntries(Object.keys(f).map(k=>[k,r[k]??'']))})),'Corregido ('+Object.keys(f).join(', ').toLowerCase()+') en '+rows.length+' fila'+(rows.length>1?'s':''))}
+  else if(a==='unify'){const v=c.querySelector('input[type=radio]:checked').value,rows=it.all.filter(r=>String(r[it.field]||'').trim()!==v);
+   ok=await apply(rows.map(r=>({id:r.ID,set:{[it.field]:v}})),rows.map(r=>({id:r.ID,set:{[it.field]:r[it.field]}})),'Unificado en «'+v+'» ('+rows.length+' filas)')}
+ }finally{if(!ok)b.disabled=false}
+});
+$('#ex').onclick=()=>{
+ if(!ISS.length){alert('Primero analiza un periodo.');return}
+ const cs=s=>'"'+String(s??'').replace(/"/g,'""')+'"',L=[['REGLA','GRAVEDAD','OBSERVACION','MEDIO','FECHA','TITULAR','ID'].join(',')];
+ ISS.filter(x=>!IGN.has(x.key)).forEach(x=>(x.all||x.rows).forEach(r=>L.push([RULES[x.rule][0],x.sev,x.title,r.MEDIO,r.FECHA,r.TITULAR,r.ID].map(cs).join(','))));
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+L.join('\n')],{type:'text/csv'}));a.download='Reporte_calidad_'+ymd(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+</script></body></html>

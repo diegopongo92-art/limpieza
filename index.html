@@ -2,87 +2,71 @@
 <html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#C8102E">
-<title>Limpieza de datos | Monitoreo Presidencia</title>
+<title>Revisión de datos | Monitoreo Presidencia</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--red:#C8102E;--dk:#8f0b21;--bg:#f6f2f3;--bd:#e5dcde;--tx:#1f1417;--mu:#6b5d61;--hi:#dc2626;--md:#d97706;--lo:#2563eb;--ok:#10b981}
+:root{--red:#C8102E;--dk:#8f0b21;--bg:#f6f2f3;--bd:#e5dcde;--tx:#1f1417;--mu:#6b5d61;--ok:#10b981;--okd:#047857}
 *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-body{margin:0;background:var(--bg);color:var(--tx);font-size:13px}
-header{background:linear-gradient(135deg,var(--red),var(--dk));color:#fff;padding:12px clamp(12px,2.2vw,44px);display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:4px solid #fff;box-shadow:0 2px 10px #0003}
+body{margin:0;background:var(--bg);color:var(--tx);font-size:14px}
+header{background:linear-gradient(135deg,var(--red),var(--dk));color:#fff;padding:12px clamp(12px,3vw,40px);display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:4px solid #fff}
 h1{margin:0;font-size:18px;font-weight:800;text-transform:uppercase;line-height:1.15}.sb{font-size:11px;opacity:.9;font-weight:600;margin-top:2px}
 #st{font-size:12px;font-weight:600;text-align:right}
-.main{padding:14px clamp(12px,2.2vw,44px) 90px}
-.bar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
-.bar label{display:block;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:5px}
-select,input,textarea{padding:9px 10px;border:1px solid var(--bd);border-radius:8px;font-size:13px;background:#fff;color:var(--tx);outline:none;max-width:100%}
-select:focus,input:focus,textarea:focus{border-color:var(--red)}
-button{font-weight:700;cursor:pointer}
-.b{padding:10px 14px;border:0;border-radius:8px;font-size:12px;color:#fff;background:var(--red);text-transform:uppercase}.b.o{background:#fff;color:var(--tx);border:1px solid var(--bd)}.b.k{background:var(--ok)}.b.s{padding:9px 12px;font-size:11px}.b:disabled{opacity:.5;cursor:default}
-.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
-.kt{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--red);border-radius:12px;padding:12px 14px}.kt span{font-size:10.5px;font-weight:800;color:var(--mu);text-transform:uppercase}.kt b{display:block;font-size:28px;font-weight:800;margin-top:4px;line-height:1}.kt small{color:var(--mu);font-weight:600}
-.kt.q{background:linear-gradient(135deg,var(--red),var(--dk));color:#fff;border:0}.kt.q span,.kt.q small{color:#fff}
-.ch{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.cp{border:1px solid var(--bd);background:#fff;color:var(--mu);font-weight:700;font-size:12px;padding:8px 13px;border-radius:20px}.cp b{margin-left:4px;color:var(--tx)}.cp.on{background:var(--red);border-color:var(--red);color:#fff}.cp.on b{color:#fff}
-.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr));gap:14px;align-items:start}
-.is{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;box-shadow:0 2px 8px #0001;border-top:4px solid var(--lo);min-width:0}
-.is.w{grid-column:1/-1}
-.is.alta{border-top-color:var(--hi)}.is.media{border-top-color:var(--md)}
-.ih{display:flex;justify-content:space-between;gap:8px;align-items:start;margin-bottom:8px}.ih h3{margin:0;font-size:14px;font-weight:800;line-height:1.3}
-.sv{font-size:10px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:10px;color:#fff;background:var(--lo);white-space:nowrap}.sv.alta{background:var(--hi)}.sv.media{background:var(--md)}
-.wh,.td{margin:0 0 6px;font-size:12.5px;line-height:1.45}.lb{display:inline-block;min-width:78px;font-size:10.5px;font-style:normal;font-weight:800;text-transform:uppercase;color:var(--mu);letter-spacing:.2px}.td{background:#f9f5f6;border-radius:8px;padding:7px 9px;margin-bottom:10px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.cx{font-size:11px;font-weight:700;padding:4px 9px;border-radius:12px;background:#e5e7eb;color:#374151}.cx.y{background:#d1fae5;color:#065f46}.cx.n{background:#fee2e2;color:#991b1b}.cx.a{background:#fef3c7;color:#92400e}
-.vd{font-weight:800;font-size:13px;margin:0 0 8px}.vd.y{color:#065f46}.vd.a{color:#92400e}
-.tw{overflow-x:auto;border:1px solid var(--bd);border-radius:10px;margin-bottom:8px}
-table.cm{border-collapse:collapse;width:100%;font-size:12px}
-.cm th,.cm td{border-bottom:1px solid var(--bd);border-right:1px solid var(--bd);padding:6px 8px;vertical-align:top;text-align:left;min-width:210px;max-width:300px;overflow-wrap:anywhere}
-.cm th:first-child,.cm td:first-child{min-width:92px;max-width:92px;position:sticky;left:0;background:#faf7f8;font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--mu);z-index:1}
-.cm tr:last-child td{border-bottom:0}.cm td:last-child,.cm th:last-child{border-right:0}
-.cm th{background:#faf7f8;font-weight:800}.cm th label{display:flex;gap:6px;align-items:center;font-size:11px;text-transform:uppercase;cursor:pointer}
-.cm td.eq{color:#9ca3af}.cm td.df{background:#fffbeb}
-.cm td.empty{color:#dc2626;font-weight:700}
+.main{max-width:1100px;margin:0 auto;padding:16px clamp(12px,3vw,24px) 90px}
+.safe{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:12px;padding:11px 14px;font-weight:600;line-height:1.45;margin-bottom:14px}
+select,textarea,input{padding:11px 12px;border:1px solid var(--bd);border-radius:10px;font-size:14px;background:#fff;color:var(--tx);outline:none;max-width:100%}
+select:focus,textarea:focus{border-color:var(--red)}
+button{font-weight:700;cursor:pointer;font-family:inherit}
+.b{padding:13px 18px;border:0;border-radius:10px;font-size:14px;color:#fff;background:var(--red)}.b.k{background:var(--ok)}.b.o{background:#fff;color:var(--tx);border:1px solid var(--bd)}.b.s{padding:9px 12px;font-size:12px}.b.big{padding:15px 22px;font-size:15px}.b:disabled{opacity:.5;cursor:default}
+.hero{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:26px 22px;text-align:center;box-shadow:0 2px 10px #0001}
+.hero h2{margin:0 0 6px;font-size:22px}.hero p{margin:0 0 16px;color:var(--mu);line-height:1.5}
+.pick{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.tl{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px;text-align:center}.tl b{display:block;font-size:26px;font-weight:800}.tl span{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase}
+.ls{display:grid;gap:8px;margin:14px 0}
+.li{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.li b{font-size:14px}.li small{display:block;color:var(--mu);font-weight:500;margin-top:2px}
+.pg{height:8px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin:6px 0 14px}.pg i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.tb{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;font-weight:700}
+.cs{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:0 2px 12px #0001}
+.cs h2{margin:0 0 4px;font-size:19px;line-height:1.3}.cs .sub{color:var(--mu);margin:0 0 14px;line-height:1.5}
+.nts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:12px;margin-bottom:12px}
+.nc{border:2px solid var(--bd);border-radius:14px;padding:13px;display:flex;flex-direction:column;gap:7px;min-width:0}.nc.rec{border-color:var(--ok)}
+.nm{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--mu);font-weight:600}.nm b{color:var(--tx);font-size:13px}
+.nt{font-size:15px;font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.ns{font-size:12.5px;color:#4b3f43;line-height:1.45;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.nf{display:flex;gap:5px;flex-wrap:wrap}.nf span{font-size:11px;font-weight:600;background:#f3f0f1;border-radius:8px;padding:3px 8px}.nf span.e{background:#fee2e2;color:#991b1b}
+.bd{font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;background:#e5e7eb;color:#374151}.bd.v{background:#d1fae5;color:#065f46}.bd.p{background:#fef3c7;color:#92400e}.bd.r{background:#dcfce7;color:#166534}
 mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
-.se{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;background:#d1fae5;color:#065f46;text-transform:uppercase}
-.rw{border:1px solid var(--bd);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:12px;line-height:1.4}
-.rw .m{color:var(--mu);font-size:11px;font-weight:600}.rw .t{display:block;font-weight:600;overflow-wrap:anywhere;margin-top:2px}
-.rw label.k{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
-.bd{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px;background:#e5e7eb;color:#374151;margin-left:4px}.bd.v{background:#d1fae5;color:#065f46}.bd.p{background:#fef3c7;color:#92400e}
-.fx{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}.fx select{flex:1 1 200px}
-.fl{display:grid;gap:10px;margin-top:8px}.fl>div{border:1px solid var(--bd);border-radius:9px;padding:8px 10px}.fl label{font-size:11px;font-weight:800;color:var(--tx);text-transform:uppercase;display:grid;gap:5px}.fl select{width:100%;text-transform:none;font-weight:500}
-.sg{font-size:11.5px;color:var(--mu);margin-top:5px;line-height:1.4}.sg b{color:var(--tx)}
-textarea{width:100%;min-height:90px;resize:vertical;margin-top:4px}
-.ro{font-size:11.5px;color:var(--mu);font-weight:600;margin-top:6px}
-a.ab{color:var(--lo);font-weight:700;text-decoration:none;font-size:11px;white-space:nowrap}
-details{margin-top:6px;font-size:12px}summary{cursor:pointer;font-weight:700;color:var(--lo)}
-.em{text-align:center;padding:50px 10px;color:var(--mu);font-weight:600}.em b{display:block;font-size:42px;margin-bottom:6px}
-#tt{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#1f1417;color:#fff;padding:11px 16px;border-radius:12px;font-weight:600;display:none;z-index:50;max-width:92vw;align-items:center;gap:12px;box-shadow:0 6px 20px #0005}
-#tt button{background:#fff;color:#1f1417;border:0;border-radius:8px;padding:6px 10px;font-size:12px}
-.mo{display:block;width:100%;text-align:center;margin:14px 0}
-@media(max-width:700px){h1{font-size:14px}.kt b{font-size:24px}.b{flex:1}.bar>div{flex:1 1 100%}.bar select{width:100%}.cm th,.cm td{min-width:180px}}
-
-th.kk{background:#ecfdf5!important}th.kd{background:#fef2f2!important}
-.kc{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:11px;font-weight:800}.kc input{width:18px;height:18px;flex:none;accent-color:#10b981}
-th.kk .kl{color:#065f46}th.kd .kl{color:#991b1b}
-.sm{border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;background:#f3f4f6;margin:2px 0 6px}.sm.ok{background:#ecfdf5;border:1px solid #a7f3d0}.sm.bad{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.vd{font-size:13px;font-weight:700;border-radius:10px;padding:10px 12px;margin:0 0 12px;line-height:1.45}.vd.y{background:#ecfdf5;color:#065f46}.vd.a{background:#fffbeb;color:#92400e}
+.ac{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}.ac .b{flex:1 1 200px}
+.nc .ac{margin-top:auto}.nc .ac .b{flex:1 1 100%}
+.hint{font-size:11.5px;color:var(--mu);margin-top:4px;line-height:1.4}
+.fl{display:grid;gap:10px;margin:10px 0}.fl label{font-size:12px;font-weight:800;display:grid;gap:5px}.fl select{width:100%;font-weight:500}.sg{font-size:12px;color:var(--mu);font-weight:500}.sg b{color:var(--tx)}
+textarea{width:100%;min-height:110px;resize:vertical;margin:8px 0}
+.foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+a.lk,.lk{background:none;border:0;color:#2563eb;font-weight:700;font-size:13px;padding:6px 0;text-decoration:none}
+.em{text-align:center;padding:36px 10px;color:var(--mu);font-weight:600}.em b{display:block;font-size:46px;margin-bottom:6px}
+#vw{position:fixed;top:0;right:0;bottom:0;width:min(52vw,900px);background:#fff;z-index:70;box-shadow:-6px 0 24px #0005;display:flex;flex-direction:column}#vw[hidden]{display:none}
+#vw .vh{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--bd)}#vw .vh b{flex:1;font-size:13px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+#vw iframe{flex:1;border:0;width:100%}.vn{padding:8px 12px;font-size:11.5px;color:var(--mu);background:#faf7f8}
 #hs{position:fixed;inset:0;background:#0006;z-index:60;display:flex;justify-content:flex-end}#hs[hidden]{display:none}
 .hp{background:#fff;width:min(440px,100%);height:100%;overflow:auto;padding:16px}.hh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:15px}
-.hi{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--bd);border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:12.5px}.hi.un{opacity:.55}.hi .m{color:var(--mu);font-size:11px;font-weight:600}
+.hi{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--bd);border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:12.5px}.hi.un{opacity:.55}.hi small{color:var(--mu);font-weight:600}
+#tt{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#1f1417;color:#fff;padding:12px 16px;border-radius:12px;font-weight:600;display:none;z-index:80;max-width:92vw;align-items:center;gap:12px;box-shadow:0 6px 20px #0005}
+#tt button{background:#fff;color:#1f1417;border:0;border-radius:8px;padding:8px 12px;font-size:13px}
+@media(min-width:901px){body.vo .main{margin:0;max-width:none;width:calc(100vw - min(52vw,900px))}}
+@media(max-width:900px){#vw{top:auto;left:0;width:100%;height:82vh;border-radius:16px 16px 0 0}}
+@media(max-width:600px){h1{font-size:14px}.tiles{gap:6px}.tl b{font-size:22px}.hero{padding:20px 14px}.hero h2{font-size:19px}.ac .b{flex:1 1 100%}}
 </style></head><body>
-<header><div><h1>Limpieza de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
+<header><div><h1>Revisión de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
 <div class="main">
-<div class="bar">
-<div><label>Analizar</label><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select></div>
-<button class="b" id="go">Analizar</button>
-<button class="b o" id="ex">Exportar reporte (CSV)</button>
-<button class="b o" id="hb">Historial y deshacer</button>
-<button class="b o" id="ig">Ver ignorados</button>
+<div class="safe">🔒 <b>Aquí no se cambia nada por sí solo.</b> Tú decides cada caso. Si descartas una nota <b>no se borra</b>: queda guardada y puedes devolverla con «Deshacer».</div>
+<div id="app"></div>
 </div>
-<div class="kp" id="kp"></div>
-<div class="ch" id="ch"></div>
-<div class="gr" id="gr"><div class="em" style="grid-column:1/-1"><b>🧹</b>Elige el periodo y pulsa Analizar.</div></div>
-</div>
-<div id="hs" hidden><div class="hp"><div class="hh"><b>Historial de esta sesión</b><button class="b o s" id="hx">Cerrar</button></div><p class="ro" style="margin:0 0 8px">Cada cambio se puede deshacer: las notas descartadas vuelven a contar y los valores vuelven a como estaban.</p><div id="hl"></div></div></div>
+<div id="vw" hidden><div class="vh"><b id="vt"></b><a class="b o s" id="vo" target="_blank" rel="noopener">Abrir en pestaña nueva ↗</a><button class="b o s" id="vx">Cerrar</button></div><div class="vn">Si la página no se ve aquí (algunos medios no lo permiten), usa «Abrir en pestaña nueva».</div><iframe id="vf" referrerpolicy="no-referrer"></iframe></div>
+<div id="hs" hidden><div class="hp"><div class="hh"><b>Lo que hiciste en esta sesión</b><button class="b o s" id="hx">Cerrar</button></div><p class="hint" style="margin:0 0 10px">Cada cambio se puede deshacer: las notas descartadas vuelven a contar y los datos vuelven a como estaban.</p><div id="hl"></div></div></div>
 <div id="tt"><span id="tm"></span><button id="tu" style="display:none">↩ Deshacer</button></div>
 <script>
+
 const API='https://script.google.com/macros/s/AKfycbzAQjXeJMaPzxnyxGYkLaufqw7sl0rLO1h-urvSPTbyJ3GEpsGExp8KMg2n3UYzFdnQ/exec',KEY='CAMILA';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const TO=['Positiva','Neutra','Negativa'];
@@ -166,12 +150,12 @@ const QCITY=[[/trujillo|chepen|pacasmayo|huamachuco/,'La Libertad'],[/chiclayo|l
 function scores(r,f){
  const T=nt(r.TITULAR),R=nt(r.RESUMEN),S=nt(r.SECCION),sc={},ev={};
  const add=(v,w,t)=>{sc[v]=(sc[v]||0)+w;const e=ev[v]=ev[v]||[];if(t&&e.indexOf(t)<0&&e.length<4)e.push(t)};
- const ext=(str,m)=>{let e=m.index+m[0].length;while(e<str.length&&/[a-z0-9]/.test(str[e]))e++;return str.slice(m.index,e).trim()};const hit=(re,w1,w2,v)=>{let m=re.exec(T);if(m){add(v,w1,ext(T,m));return}m=re.exec(R);if(m)add(v,w2,ext(R,m))};
+ const ext=(str,m)=>{let e=m.index+m[0].replace(/\s+$/,'').length;while(e<str.length&&/[a-z0-9]/.test(str[e]))e++;return str.slice(m.index,e).trim()};const hit=(re,w1,w2,v)=>{let m=re.exec(T);if(m){add(v,w1,ext(T,m));return}m=re.exec(R);if(m)add(v,w2,ext(R,m))};
  if(f==='EJE'){if(S)QSEC.forEach(([re,v])=>{if(re.test(S))add(v,2.5,'sección «'+r.SECCION+'»')});QEJE.forEach(([v,re])=>hit(re,4,2,v));QEJEM.forEach(([v,re])=>hit(re,6,3,v))}
  if(f==='ORIGEN')QORI.forEach(([v,re,a,b])=>hit(re,a,b,v));
  if(f==='AMBITO'){const md=nk(r.MEDIO);
   AMB.slice(1).forEach(a=>{const k=nt(a);if(k.length<4)return;const re=new RegExp('(^| )'+k+'( |$)');if(re.test(T))add(a,9,k);else if(re.test(R))add(a,3,k);if(nk(a).length>=4&&md.includes(nk(a)))add(a,8,'medio «'+r.MEDIO+'»')});
-  QCITY.forEach(([re,v])=>hit(re,7,2.5,v));
+  QCITY.forEach(([re,v])=>hit(new RegExp('(^| )(?:'+re.source+')( |$)'),7,2.5,v));
   if(/(^| )lima( |$)/.test(T))add('Lima Metropolitana',9,'lima');else if(/(^| )lima( |$)/.test(R))add('Lima Metropolitana',3,'lima');add(AMB[0],1.5)}
  return{sc,ev,top:Object.entries(sc).sort((a,b)=>b[1]-a[1])[0]};
 }
@@ -246,82 +230,90 @@ function detect(){
  ISS=I;draw();
 }
 function rank(x){const sc=r=>(isV(r)?4:0)+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].filter(k=>String(r[k]||'').trim()).length+(/lima/i.test(String(r.REGION||'')+' '+r.MEDIO)?1:0);return x.slice().sort((a,b)=>sc(b)-sc(a)||(a._d||0)-(b._d||0))}
-/* ---------- tarjetas ---------- */
-const link=r=>/^https?:/.test(String(r.URL||''))?' <a class="ab" target="_blank" rel="noopener" href="'+esc(r.URL)+'">abrir nota ↗</a>':'';
-const head=r=>'<span class="m"><b>'+esc(r.MEDIO)+'</b> · '+esc(r.TIPO)+' · '+fmtD(r)+'<span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+link(r)+'</span>';
-const rowH=r=>'<div class="rw">'+head(r)+'<span class="t">'+esc(r.TITULAR)+'</span></div>';
-const WT=(w,t)=>'<p class="wh"><i class="lb">Qué pasa</i> '+w+'</p><p class="td"><i class="lb">Qué hacer</i> '+t+'</p>';
-function cmpTable(it,i){
- const R=it.rows.slice(0,6),big=it.rows.length>5,tk=r=>nt(r.TITULAR).split(' ').filter(Boolean);
- const common=new Set(tk(R[0]).filter(w=>R.every(r=>tk(r).includes(w))));
- const hl=t=>String(t||'').split(/(\s+)/).map(w=>{const k=nt(w);return k&&!common.has(k)?'<mark>'+esc(w)+'</mark>':esc(w)}).join('');
- const F=[['Medio',r=>r.MEDIO],['Tipo',r=>r.TIPO],['Fecha y hora',fmtD],['Titular',r=>r.TITULAR,r=>hl(r.TITULAR)],['Resumen',r=>nt(r.RESUMEN),r=>esc(String(r.RESUMEN||'').slice(0,170))+(String(r.RESUMEN||'').length>170?'…':'')],['Enlace',r=>{const u=uinfo(r.URL);return u?u.key:String(r.URL||'')},r=>{const u=uinfo(r.URL);return String(r.URL||'')?'<a class="ab" target="_blank" rel="noopener" href="'+esc(r.URL)+'">abrir nota ↗</a><br><span style="color:#6b5d61">'+(u?esc(u.host)+(u.id?' · id '+esc(u.id):''):'enlace no válido')+'</span>':'—'}],['Estado',r=>r.ESTADO],['Criterio',r=>r.TONO],['Eje',r=>r.EJE],['Origen',r=>r.ORIGEN],['Ámbito',r=>r.AMBITO],['Revisó',r=>r.REVISADO_POR]];
- let h='<div class="tw"><table class="cm"><tr><th></th>'+R.map((r,j)=>'<th><label class="kc"><input type="checkbox" class="kp2" value="'+esc(r.ID)+'"'+(big||j===0?' checked':'')+'><span class="kl"></span></label></th>').join('')+'</tr>';
- F.forEach(([l,v,d])=>{const vals=R.map(r=>String(v(r)||'').trim()),same=vals.every(x=>x===vals[0]);h+='<tr><td>'+l+'</td>'+R.map((r,j)=>'<td class="'+(vals[j]===''?'empty':same?'eq':'df')+'">'+(vals[j]===''?'vacío':(d?d(r):esc(vals[j])))+'</td>').join('')+'</tr>'});
- return h+'</table></div>';
-}
-function dupSync(c){
- const it=ISS[+c.dataset.i];if(!it)return;const ks=[...c.querySelectorAll('.kp2')],keep=ks.filter(x=>x.checked).length,del=ks.length-keep;
- ks.forEach(x=>{const th=x.closest('th'),sp=th.querySelector('.kl');th.className=x.checked?'kk':'kd';sp.textContent=x.checked?'✔ SE CONSERVA':'✖ SE DESCARTA'});
- const sm=c.querySelector('.sm'),bt=c.querySelector('[data-a=dupapply]');
- if(!keep){sm.className='sm bad';sm.innerHTML='⚠ Tienes que dejar al menos una nota marcada como <b>«Se conserva»</b>.';bt.disabled=true;bt.textContent='Aplicar'}
- else if(!del){sm.className='sm';sm.innerHTML='No se descartará nada: todas se conservan y siguen contando en el dashboard.';bt.disabled=true;bt.textContent='Nada que descartar'}
- else{sm.className='sm ok';sm.innerHTML='✔ Se conservan <b>'+keep+'</b> y siguen contando.<br>✖ Se descartan <b>'+del+'</b>: dejan de contar, pero <b>no se borran</b> (quedan en la hoja «Descartadas» y puedes restaurarlas con «Deshacer» o en Historial).';bt.disabled=false;bt.textContent='Aplicar: conservar '+keep+' · descartar '+del}
-}
-function card(it,i){
- let b='',w='',ign='<button class="b o s" data-a="ign">'+(IGN.has(it.key)?'Dejar de ignorar':'Ignorar')+'</button>',wide='';
- const rule=it.rule,r0=it.rows[0];
+/* ====================== INTERFAZ SIMPLE: un caso a la vez ====================== */
+let MODE='home',SK=new Set(),TOT=0,CUR=null,RF='all';
+const NAMES={cd:['📺','Canales digitales (no se monitorean)'],dup:['🔁','Posibles notas repetidas'],falt:['📝','Notas validadas con datos sin llenar'],val:['✏️','Opciones mal escritas'],sus:['🤔','Categorías que parecen equivocadas'],res:['📄','Resúmenes vacíos o raros'],var:['🔤','Cosas escritas de dos maneras'],fec:['📅','Fechas raras'],out:['📈','Montos raros'],tit:['🏷️','Titulares raros'],pen:['⏳','Pendientes de validar hace varios días']};
+const ORDER=Object.keys(NAMES);
+const vis=()=>ISS.filter(x=>!IGN.has(x.key));
+const queue=()=>vis().filter(x=>(RF==='all'||x.rule===RF)&&!SK.has(x.key)).sort((a,b)=>ORDER.indexOf(a.rule)-ORDER.indexOf(b.rule));
+const byId=id=>ROWS.find(r=>r.ID===id);
+/* ---------- piezas ---------- */
+function noteCard(r,o){o=o||{};const em=k=>String(r[k]||'').trim()?'<span>'+esc(r[k])+'</span>':'<span class="e">sin '+({TONO:'criterio',EJE:'eje',ORIGEN:'origen',AMBITO:'ámbito'}[k])+'</span>';
+ const res=String(r.RESUMEN||'').trim();
+ return'<div class="nc'+(o.rec?' rec':'')+'"><div class="nm"><b>'+esc(r.MEDIO)+'</b><span>'+esc(r.TIPO)+' · '+fmtD(r)+'</span><span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+(o.rec?'<span class="bd r">Sugerida: la más completa</span>':'')+'</div>'+
+ '<div class="nt">'+(o.hl||esc(r.TITULAR))+'</div>'+(res?'<div class="ns">'+(o.hlr||esc(res))+'</div>':'<div class="ns" style="color:#dc2626">Sin resumen</div>')+
+ (o.noF?'':'<div class="nf">'+['TONO','EJE','ORIGEN','AMBITO'].map(em).join('')+'</div>')+
+ (String(r.URL||'').trim()?'<div><button class="b o s" data-v="'+esc(r.ID)+'">👁 Ver nota aquí</button></div>':'<div class="hint">Esta fila no tiene enlace.</div>')+(o.btn||'')+'</div>'}
+function openNote(r){if(!r)return;const u=String(r.URL||'').trim();if(!/^https?:/i.test(u))return;$('#vt').textContent=r.MEDIO+' · '+r.TITULAR;$('#vo').href=u;$('#vf').src=u;$('#vw').hidden=false;document.body.classList.add('vo')}
+const btnLeave='<button class="b o" data-a="ign">Dejar como está</button>';
+const foot=(extra)=>'<div class="foot"><button class="lk" data-a="skip">Saltar por ahora →</button>'+(extra||'')+'</div>';
+/* ---------- caso actual ---------- */
+function caseHTML(it){
+ const rule=it.rule,r0=it.rows[0];let h='';
  if(rule==='dup'){
-  const R=it.rows,sim=Math.min(...R.slice(1).map(r=>jac(R[0].TITULAR,r.TITULAR))),same=R.every(r=>mcomp(mkey(r.MEDIO),mkey(R[0].MEDIO))),sd=R.every(r=>r._d&&R[0]._d&&ymd(r._d)===ymd(R[0]._d)),st=R.every(r=>tipoK(r.TIPO)===tipoK(R[0].TIPO));
-  const ui=R.map(r=>uinfo(r.URL)),all=ui.every(Boolean),sameUrl=all&&ui.every(u=>u.key===ui[0].key),nearUrl=!sameUrl&&all&&ui.every(u=>u.host===ui[0].host&&sw(u.slug)>=5&&jac(u.slug,ui[0].slug)>=.7),noU=ui.some(u=>!u);
+  const R=it.rows,pair=R.length===2,sim=Math.min(...R.slice(1).map(r=>jac(R[0].TITULAR,r.TITULAR))),same=R.every(r=>mcomp(mkey(r.MEDIO),mkey(R[0].MEDIO))),st=R.every(r=>tipoK(r.TIPO)===tipoK(R[0].TIPO));
+  const ui=R.map(r=>uinfo(r.URL)),all=ui.every(Boolean),sameUrl=all&&ui.every(u=>u.key===ui[0].key),nearUrl=!sameUrl&&all&&ui.every(u=>u.host===ui[0].host&&sw(u.slug)>=5&&jac(u.slug,ui[0].slug)>=.7);
   let vd,cl='y';
-  if(sameUrl&&sim<.85)vd='Es la misma nota actualizada: el medio cambió el titular, pero el enlace es el mismo.';
-  else if(sameUrl)vd='Es la misma nota: comparten el mismo enlace.';
-  else if(nearUrl&&sim<.85)vd='Muy probablemente es la misma nota web actualizada: el enlace es casi idéntico.';
-  else if(sim>=.85&&same&&st)vd='Casi seguro es la misma nota.';
-  else{vd='Podría ser la misma nota o dos notas distintas: compara abajo antes de descartar.';cl='a'}
-  const ch='<div class="chips"><span class="cx '+(same?'y':'a')+'">'+(same?'Mismo medio':'Medios distintos')+'</span><span class="cx '+(st?'y':'a')+'">'+(st?'Mismo tipo ('+esc(R[0].TIPO)+')':'Tipos distintos')+'</span><span class="cx '+(sd?'y':'a')+'">'+(sd?'Mismo día':'Días distintos')+'</span><span class="cx '+(sim>=.85?'y':'a')+'">Titular '+Math.round(sim*100)+'% parecido</span><span class="cx '+(sameUrl?'y':nearUrl?'y':noU?'':'a')+'">'+(sameUrl?'Mismo enlace':nearUrl?'Enlace casi igual':noU?'Enlace faltante':'Enlace distinto')+'</span></div>';
-  w=WT('Hay <b>'+R.length+'</b> filas que parecen la misma mención. Lo amarillo es lo que cambia entre ellas.','Revisa la tabla. Cada nota tiene una casilla: <b>marcada = se conserva</b>, <b>sin marcar = se descarta</b>. Ya viene elegida la más completa; cámbiala si prefieres otra.');
-  b='<p class="vd '+cl+'">'+vd+'</p>'+ch+cmpTable(it,i)+(R.length>6?'<div class="ro">Se muestran 6 de '+R.length+'. Resuelve estas y vuelve a analizar.</div>':'')+'<div class="sm"></div><div class="fx"><button class="b k s" data-a="dupapply"></button><button class="b o s" data-a="ign">No son duplicados · dejar todas</button></div><div class="ro">🔒 Nada se borra: lo descartado va a la hoja «Descartadas» y se puede restaurar.</div>';wide=' w';
+  if(sameUrl&&sim<.85)vd='Parece la <b>misma nota</b>: el medio cambió el titular, pero el enlace es el mismo.';
+  else if(sameUrl)vd='Es la <b>misma nota</b>: tienen el mismo enlace.';
+  else if(nearUrl&&sim<.85)vd='Muy probablemente es la <b>misma nota actualizada</b>: el enlace es casi idéntico.';
+  else if(sim>=.85&&same&&st)vd='Casi seguro es la <b>misma nota</b>.';
+  else{vd='<b>No estoy seguro.</b> Léelas con calma: podrían ser dos notas distintas.';cl='a'}
+  const tk=r=>nt(r.TITULAR).split(' ').filter(Boolean),common=new Set(tk(R[0]).filter(w=>R.every(r=>tk(r).includes(w))));
+  const hl=r=>String(r.TITULAR||'').split(/(\s+)/).map(w=>{const k=nt(w);return k&&!common.has(k)?'<mark>'+esc(w)+'</mark>':esc(w)}).join('');
+  const L=R.slice(0,pair?2:6);
+  h='<h2>¿Es la misma nota dos veces?</h2><p class="sub">Si lo es, deja solo una. La otra se descarta (no se borra).</p><div class="vd '+cl+'">'+vd+'</div><div class="nts">'+
+   L.map((r,j)=>noteCard(r,{rec:j===0,hl:hl(r),btn:'<div class="ac">'+(pair?'<button class="b k" data-a="keep" data-id="'+esc(r.ID)+'">✔ Quedarme con esta<br><small style="font-weight:500">la otra se descarta</small></button>':'<button class="b o" data-a="del" data-id="'+esc(r.ID)+'">✖ Descartar solo esta</button>')+'</div>'})).join('')+'</div>'+
+   (R.length>6?'<div class="hint">Se muestran 6 de '+R.length+'. Resuelve estas y vuelve a revisar.</div>':'')+
+   '<div class="ac"><button class="b o" data-a="ign">No son iguales · dejar todo como está</button></div>'+foot();
  }else if(rule==='cd'){
-  w=WT('El monitoreo no incluye canales digitales ni redes, pero hay <b>'+it.rows.length+'</b> filas de ese tipo en el periodo.','Revisa la lista y descarta las que sobran. Todas vienen marcadas.');
-  b='<div style="max-height:320px;overflow:auto">'+it.rows.slice(0,150).map(r=>'<div class="rw"><label class="k"><input type="checkbox" class="dx" value="'+esc(r.ID)+'" checked><div>'+head(r)+'<span class="t">'+esc(r.TITULAR)+'</span></div></label></div>').join('')+'</div>'+(it.rows.length>150?'<div class="ro">Se muestran 150 de '+it.rows.length+'; al terminar vuelve a analizar.</div>':'')+'<div class="fx"><button class="b s" data-a="disc">Descartar las marcadas</button>'+ign+'</div>';
+  h='<h2>Estas filas son de canales digitales</h2><p class="sub">El monitoreo no incluye canales digitales ni redes. Son <b>'+it.rows.length+'</b>. Si quieres, puedes descartarlas todas de una vez.</p><div class="nts">'+it.rows.slice(0,6).map(r=>noteCard(r,{noF:1})).join('')+'</div>'+(it.rows.length>6?'<div class="hint">…y '+(it.rows.length-6)+' más.</div>':'')+
+   '<div class="ac"><button class="b k big" data-a="cdall">Descartar las '+it.rows.length+'</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='falt'){
-  w=WT('Esta nota está <b>validada</b> pero le falta: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Sin eso no aparece bien en el dashboard.','Elige el valor de cada campo. Donde se pudo, ya viene sugerido según lo que dice la nota.');
-  b=rowH(r0)+'<details><summary>Ver resumen</summary><div class="ro" style="font-weight:500;color:var(--tx)">'+esc(r0.RESUMEN||'(sin resumen)')+'</div></details><div class="fl">'+it.miss.map(k=>{const s=k==='TONO'?null:sugg(r0,k),ok=s&&s.w>=(k==='AMBITO'?3:4);return'<div><label>'+LBL[k]+'<select data-k="'+k+'"><option value="">Elegir…</option>'+FLD[k].map(o=>'<option'+(ok&&o===s.v?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select></label><div class="sg">'+(k==='TONO'?'Léela y elige el criterio de imagen para la Presidencia.':ok?'Sugerencia: <b>'+esc(s.v)+'</b>'+(s.terms.length?' — el texto menciona '+s.terms.map(t=>'«'+esc(t)+'»').join(', '):''):'Sin sugerencia clara: elige según la nota.')+'</div></div>'}).join('')+'</div><div class="fx"><button class="b k s" data-a="set">Guardar lo elegido</button>'+ign+'</div>';
+  h='<h2>A esta nota le faltan datos</h2><p class="sub">Está <b>validada</b> pero no tiene: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Sin eso no sale bien en el dashboard.</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><div class="fl">'+
+   it.miss.map(k=>{const s=k==='TONO'?null:sugg(r0,k),ok=s&&s.w>=(k==='AMBITO'?3:4);return'<label>'+LBL[k]+'<select data-k="'+k+'"><option value="">Elegir…</option>'+FLD[k].map(o=>'<option'+(ok&&o===s.v?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select><span class="sg">'+(k==='TONO'?'Léela y elige el criterio de imagen.':ok?'Sugerencia: <b>'+esc(s.v)+'</b>'+(s.terms.length?' (el texto menciona '+s.terms.map(t=>'«'+esc(t)+'»').join(', ')+')':''):'Sin sugerencia clara: elige según la nota.')+'</span></label>'}).join('')+'</div>'+
+   '<div class="ac"><button class="b k big" data-a="save">Guardar</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='val'){
-  w=WT('En <b>'+LBL[it.field]+'</b> escribieron «<b>'+esc(it.val)+'</b>», pero esa opción no existe en el formulario ('+it.all.length+' fila'+(it.all.length>1?'s':'')+'). No se agrupa en los gráficos.','Elige a qué opción corresponde y se corrige en todas las filas.');
-  b=it.rows.map(rowH).join('')+(it.all.length>4?'<div class="ro">…y '+(it.all.length-4)+' más</div>':'')+'<div class="fx"><select data-k="'+it.field+'"><option value="">'+(it.sug?'Corregir a…':'Elegir la opción correcta…')+'</option>'+FLD[it.field].map(o=>'<option'+(o===it.sug?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select><button class="b k s" data-a="setall">Corregir '+it.all.length+'</button>'+ign+'</div>';
+  h='<h2>Una opción está mal escrita</h2><p class="sub">En <b>'+LBL[it.field]+'</b> pusieron «<b>'+esc(it.val)+'</b>», pero esa opción no existe en el formulario ('+it.all.length+' fila'+(it.all.length>1?'s':'')+').</p><div class="nts">'+it.rows.slice(0,2).map(r=>noteCard(r,{noF:1})).join('')+'</div>'+(it.all.length>2?'<div class="hint">…y '+(it.all.length-2)+' más con lo mismo. Se corrigen todas juntas.</div>':'')+
+   '<div class="fl"><label>¿Cuál es la opción correcta?<select data-k="'+it.field+'"><option value="">Elegir…</option>'+FLD[it.field].map(o=>'<option'+(o===it.sug?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="saveall">Corregir '+it.all.length+'</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='sus'){
-  w=WT('Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero '+(it.terms.length?'el texto habla de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).'),'Lee el titular. Si la sugerencia es correcta, cámbiala; si estaba bien, pulsa Está bien.');
-  b='<div class="rw">'+head(r0)+'<span class="t">'+hlTerms(r0.TITULAR,it.terms)+'</span></div><details><summary>Ver resumen</summary><div class="ro" style="font-weight:500;color:var(--tx)">'+hlTerms(r0.RESUMEN||'(sin resumen)',it.terms)+'</div></details><div class="fx"><select data-k="'+it.field+'">'+[it.sug,...FLD[it.field].filter(o=>o!==it.sug)].map(o=>'<option>'+esc(o)+'</option>').join('')+'</select><button class="b k s" data-a="set">Cambiar</button><button class="b o s" data-a="ign">Está bien</button></div>';
+  h='<h2>¿Esta categoría está bien?</h2><p class="sub">Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero '+(it.terms.length?'el texto parece hablar de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).')+'</p><div class="nts">'+noteCard(r0,{hl:hlTerms(r0.TITULAR,it.terms),hlr:hlTerms(r0.RESUMEN,it.terms)})+'</div>'+
+   '<div class="fl"><label>Cambiar a<select data-k="'+it.field+'">'+[it.sug,...FLD[it.field].filter(o=>o!==it.sug)].map(o=>'<option>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="save">Cambiar</button><button class="b o big" data-a="ign">Está bien así</button></div>'+foot();
  }else if(rule==='res'){
-  w=WT('El resumen de esta nota tiene un problema: <b>'+esc(it.title.toLowerCase())+'</b>.','Escribe o corrige el resumen aquí mismo y guarda.');
-  b=rowH(r0)+'<textarea data-k="RESUMEN">'+esc(r0.RESUMEN)+'</textarea><div class="fx"><button class="b k s" data-a="res">Guardar resumen</button>'+ign+'</div>';
+  h='<h2>El resumen necesita revisión</h2><p class="sub">Problema: <b>'+esc(it.title.toLowerCase())+'</b>.</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><textarea data-k="RESUMEN" placeholder="Escribe el resumen aquí">'+esc(r0.RESUMEN)+'</textarea><div class="ac"><button class="b k big" data-a="saveres">Guardar resumen</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='var'){
-  w=WT('En <b>'+esc(LBL[it.field]||it.field)+'</b> la misma cosa está escrita de '+it.forms.length+' maneras y se cuenta por separado en los gráficos.',it.edit?'Elige la forma correcta y se unifica en todas las filas.':'Es un campo que se corrige directamente en el Google Sheet (aquí solo se reporta).');
-  b='<div class="rw">'+it.forms.map((f,j)=>(it.edit?'<label style="display:block;font-weight:700;margin:3px 0"><input type="radio" name="k'+i+'" value="'+esc(f[0])+'"'+(j?'':' checked')+'> ':'<div style="margin:3px 0">')+'«'+esc(f[0])+'» <span class="m">'+f[1]+' fila'+(f[1]>1?'s':'')+'</span>'+(it.edit?'</label>':'</div>')).join('')+'</div><div class="fx">'+(it.edit?'<button class="b k s" data-a="unify">Unificar en la marcada</button>':'')+ign+'</div>';
+  h='<h2>Lo mismo está escrito de varias maneras</h2><p class="sub">En <b>'+esc(LBL[it.field]||it.field)+'</b> se cuenta por separado en los gráficos.'+(it.edit?' Elige la forma correcta y se unifican todas.':' Este campo se corrige en el Google Sheet; aquí solo te aviso.')+'</p><div class="nc">'+it.forms.map((f,j)=>(it.edit?'<label style="font-weight:700;display:block;margin:4px 0"><input type="radio" name="uf" value="'+esc(f[0])+'"'+(j?'':' checked')+'> ':'<div style="margin:4px 0">')+'«'+esc(f[0])+'» <span class="hint">'+f[1]+' fila'+(f[1]>1?'s':'')+'</span>'+(it.edit?'</label>':'</div>')).join('')+'</div><div class="ac">'+(it.edit?'<button class="b k big" data-a="unify">Unificar</button>':'')+'<button class="b o big" data-a="ign">'+(it.edit?'Dejar como está':'Entendido')+'</button></div>'+foot();
  }else{
-  const ex=rule==='fec'?'Esta columna no se edita desde aquí: corrígela en el Google Sheet.':rule==='pen'?'Valídala o descártala desde el formulario.':rule==='out'?(it.why||''):'Solo reporte: corrígelo en el formulario o en el Sheet si hace falta.';
-  w=WT((rule==='fec'?'La fecha de esta nota tiene un problema: ':rule==='pen'?'Nota pendiente: ':rule==='out'?'Valor sospechoso: ':'Revisar: ')+'<b>'+esc(it.title)+'</b>.',ex);b=rowH(r0)+'<div class="fx">'+ign+'</div>';
+  const ex=rule==='fec'?'Esta columna se corrige en el Google Sheet, no aquí.':rule==='pen'?'Valídala o descártala desde el formulario.':rule==='out'?(it.why||''):'Solo es un aviso: corrígelo en el formulario o en el Sheet si hace falta.';
+  h='<h2>'+esc(it.title)+'</h2><p class="sub">'+esc(ex)+'</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><div class="ac"><button class="b o big" data-a="ign">Entendido, siguiente</button></div>';
  }
- return'<div class="is '+it.sev+wide+'" data-i="'+i+'"'+(rule==='dup'?' data-dup="1"':'')+'><div class="ih"><h3>'+esc(it.title)+'</h3><span class="sv '+it.sev+'">'+it.sev+'</span></div>'+w+b+'</div>';
+ return'<div class="cs" data-k="'+esc(it.key)+'">'+h+'</div>';
 }
+/* ---------- pantallas ---------- */
 function draw(){
- const live=ROWS.filter(r=>!r._del),A=live.filter(r=>!isCD(r)),vis=ISS.filter(x=>SHI?IGN.has(x.key):!IGN.has(x.key)),cnt={};vis.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
- const okA=new Set(A.map(r=>r.ID)),bad=new Set();vis.filter(x=>!SHI&&x.rule!=='cd').forEach(x=>(x.all||x.rows).forEach(r=>{if(okA.has(r.ID))bad.add(r.ID)}));const pct=A.length?Math.max(0,Math.round(100*(1-bad.size/A.length))):100;
- const hi=vis.filter(x=>x.sev==='alta').length;
- $('#kp').innerHTML='<div class="kt q"><span>Calidad de los datos</span><b>'+pct+'%</b><small>filas sin observaciones</small></div><div class="kt"><span>Filas analizadas</span><b>'+live.length.toLocaleString('es-PE')+'</b><small>'+(ROWS.length-live.length)+' ya descartadas</small></div><div class="kt" style="border-left-color:var(--hi)"><span>Gravedad alta</span><b>'+hi+'</b><small>conviene corregir ya</small></div><div class="kt" style="border-left-color:var(--md)"><span>Observaciones</span><b>'+vis.length+'</b><small>en total</small></div><div class="kt" style="border-left-color:var(--ok)"><span>Resueltas en esta sesión</span><b>'+DONE+'</b><small>cambios guardados</small></div>';
- $('#ch').innerHTML='<button class="cp'+(F==='all'?' on':'')+'" data-f="all">Todas<b>'+vis.length+'</b></button>'+Object.keys(RULES).filter(k=>cnt[k]).map(k=>'<button class="cp'+(F===k?' on':'')+'" data-f="'+k+'">'+RULES[k][0]+'<b>'+cnt[k]+'</b></button>').join('');
- const order={alta:0,media:1,baja:2},keys=Object.keys(RULES),L=vis.filter(x=>F==='all'||x.rule===F).sort((a,b)=>order[a.sev]-order[b.sev]||keys.indexOf(a.rule)-keys.indexOf(b.rule));
- $('#gr').innerHTML=L.length?L.slice(0,SHOW).map(x=>card(x,ISS.indexOf(x))).join('')+(L.length>SHOW?'<button class="b o mo" id="mo" style="grid-column:1/-1">Mostrar más ('+(L.length-SHOW)+')</button>':''):'<div class="em" style="grid-column:1/-1"><b>✨</b>'+(ROWS.length?(SHI?'No hay observaciones ignoradas.':'Sin observaciones en esta categoría.'):'Elige el periodo y pulsa Analizar.')+'</div>';
- document.querySelectorAll('.is[data-dup]').forEach(dupSync);
- $('#ig').textContent=SHI?'Ver pendientes':'Ver ignorados ('+ISS.filter(x=>IGN.has(x.key)).length+')';
+ const A=$('#app'),live=ROWS.filter(r=>!r._del&&!isCD(r)),V=vis(),cnt={};V.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
+ if(!ROWS.length){A.innerHTML='<div class="hero"><h2>Revisemos que todo esté bien 🧹</h2><p>Elige el periodo y pulsa el botón. Voy a buscar notas repetidas, datos sin llenar y categorías dudosas.<br><b>Todavía no se cambia nada.</b></p><div class="pick"><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select><button class="b big" id="go">Revisar mis datos</button></div></div>';bind();return}
+ const bar='<div class="pick" style="justify-content:flex-start;margin-bottom:12px"><select id="rg"><option value="7"'+(RGV==='7'?' selected':'')+'>Últimos 7 días</option><option value="30"'+(RGV==='30'?' selected':'')+'>Últimos 30 días</option><option value="90"'+(RGV==='90'?' selected':'')+'>Últimos 90 días</option><option value="0"'+(RGV==='0'?' selected':'')+'>Todo el historial</option></select><button class="b o s" id="go">Revisar de nuevo</button><button class="b o s" id="hb">↩ Lo que hice (deshacer)</button></div>';
+ if(MODE==='review'){
+  const Q=queue();
+  if(!Q.length){const sk=vis().filter(x=>(RF==='all'||x.rule===RF)&&SK.has(x.key)).length;
+   A.innerHTML=bar+'<div class="hero"><h2>'+(sk?'Terminaste lo principal 👏':'¡Listo! No queda nada por revisar 🎉')+'</h2><p>'+(sk?'Dejaste '+sk+' caso'+(sk>1?'s':'')+' para después.':'Tus datos quedaron en buen estado.')+'</p><div class="pick">'+(sk?'<button class="b big" data-a="again">Revisar los que salté</button>':'')+'<button class="b o big" data-a="home">Volver al inicio</button></div></div>';bind();return}
+  const it=Q[0];CUR=it;const done=Math.max(0,TOT-Q.length),pc=TOT?Math.min(100,Math.round(100*done/TOT)):0;
+  A.innerHTML=bar+'<div class="tb"><button class="lk" data-a="home">← Volver al inicio</button><span>'+(RF==='all'?'':NAMES[RF][1]+' · ')+'Quedan '+Q.length+'</span></div><div class="pg"><i style="width:'+pc+'%"></i></div>'+caseHTML(it);bind();return}
+ /* inicio */
+ const bad=new Set();V.forEach(x=>{if(x.rule!=='cd')(x.all||x.rows).forEach(r=>bad.add(r.ID))});const pct=live.length?Math.max(0,Math.round(100*(1-bad.size/live.length))):100;
+ const ig=ISS.filter(x=>IGN.has(x.key)).length;
+ let h=bar+'<div class="tiles"><div class="tl"><b>'+live.length.toLocaleString('es-PE')+'</b><span>Menciones revisadas</span></div><div class="tl"><b>'+V.length+'</b><span>Por revisar</span></div><div class="tl"><b>'+pct+'%</b><span>En buen estado</span></div></div>';
+ if(!V.length)h+='<div class="hero"><h2>✅ Todo está bien</h2><p>No encontré nada que corregir en estas '+live.length.toLocaleString('es-PE')+' menciones.'+(ig?'<br>Hay '+ig+' caso'+(ig>1?'s':'')+' que dejaste como estaba.':'')+'</p>'+(ig?'<button class="b o" data-a="unign">Volver a mostrar los que dejé como están</button>':'')+'</div>';
+ else{h+='<div class="hero"><h2>Encontré '+V.length+' cosa'+(V.length>1?'s':'')+' para revisar</h2><p>Te las muestro <b>una por una</b>, con una pregunta simple y botones claros. Todavía no se cambió nada.</p><button class="b big" data-a="start" data-r="all">Empezar la revisión</button></div><div class="ls">'+ORDER.filter(k=>cnt[k]).map(k=>'<div class="li"><div><b>'+NAMES[k][0]+' '+NAMES[k][1]+'</b><small>'+cnt[k]+' caso'+(cnt[k]>1?'s':'')+'</small></div><button class="b o s" data-a="start" data-r="'+k+'">Revisar solo esto</button></div>').join('')+'</div>'+(ig?'<button class="lk" data-a="unign">Mostrar de nuevo los '+ig+' que dejé como están</button>':'')+'<div><button class="lk" data-a="csv">Descargar lista de observaciones (CSV)</button></div>'}
+ A.innerHTML=h;bind();
 }
-/* ---------- guardar cambios ---------- */
+let RGV='30';
+function bind(){const g=$('#go');if(g)g.onclick=()=>{const s=$('#rg');if(s)RGV=s.value;MODE='home';SK=new Set();load()};const h=$('#hb');if(h)h.onclick=()=>{$('#hs').hidden=false;hist()}}
+/* ---------- guardar ---------- */
 async function apply(items,inv,desc,rec){
  if(!items.length)return false;
- if(items.length>15&&!confirm(desc+'\n\nSe modificarán '+items.length+' filas. ¿Continuar?'))return false;
+ if(items.length>15&&!confirm(desc+'\n\nSe van a modificar '+items.length+' filas. ¿Continuar?'))return false;
  let fall=[];
  try{
   for(let i=0;i<items.length;i+=40){
@@ -329,48 +321,51 @@ async function apply(items,inv,desc,rec){
    let j;try{j=await(await fetch(API,{method:'POST',body:JSON.stringify({key:KEY,user:USER,action:'batch',items:ch}),signal:ct.signal})).json()}finally{clearTimeout(tt)}
    if(!j||j.error)throw new Error(j?j.error:'sin respuesta');fall=fall.concat(j.fallos||[]);
   }
- }catch(e){alert('No se pudo guardar ('+(e.name==='AbortError'?'Google tardó demasiado':e.message)+'). Nada se perdió; puedes reintentar.');return false}
- const bad=new Set(fall),byId={};ROWS.forEach(r=>byId[r.ID]=r);
- items.forEach(it=>{if(bad.has(it.id))return;const r=byId[it.id];if(!r)return;Object.keys(it.set).forEach(k=>{r[k]=it.set[k]});r._del=String(r.ELIMINADA)==='1'});
+ }catch(e){alert('No se pudo guardar ('+(e.name==='AbortError'?'Google tardó demasiado':e.message)+'). No se perdió nada; puedes reintentar.');return false}
+ const bad=new Set(fall),bi={};ROWS.forEach(r=>bi[r.ID]=r);
+ items.forEach(it=>{if(bad.has(it.id))return;const r=bi[it.id];if(!r)return;Object.keys(it.set).forEach(k=>{r[k]=it.set[k]});r._del=String(r.ELIMINADA)==='1'});
  const good=items.filter(it=>!bad.has(it.id)),ginv=inv.filter(it=>!bad.has(it.id));
  DONE+=good.length;if(rec!==false)UND.push({inv:ginv,desc,t:new Date(),n:good.length});detect();if(!$('#hs').hidden)hist();
  toast(fall.length?'✓ '+good.length+' guardadas · '+fall.length+' no se pudieron aplicar':'✓ '+desc,true);return true;
 }
 async function undoAt(k){const u=UND[k];if(!u||u.undone)return false;const r=await apply(u.inv,[],'Deshecho: '+u.desc,false);if(r){u.undone=true;DONE=Math.max(0,DONE-(u.n||0));draw();if(!$('#hs').hidden)hist();toast('↩ Deshecho: '+u.desc)}return r}
 function undo(){$('#tt').style.display='none';for(let k=UND.length-1;k>=0;k--)if(!UND[k].undone)return undoAt(k)}
-function hist(){const L=UND.map((u,k)=>[u,k]).reverse();$('#hl').innerHTML=L.length?L.map(([u,k])=>'<div class="hi'+(u.undone?' un':'')+'"><div><b>'+esc(u.desc)+'</b><br><span class="m">'+p2(u.t.getHours())+':'+p2(u.t.getMinutes())+' · '+u.n+' fila'+(u.n>1?'s':'')+(u.undone?' · ya deshecho':'')+'</span></div>'+(u.undone?'':'<button class="b o s" data-u="'+k+'">↩ Deshacer</button>')+'</div>').join(''):'<div class="em"><b>📋</b>Aún no hiciste cambios en esta sesión.</div>'}
+function hist(){const L=UND.map((u,k)=>[u,k]).reverse();$('#hl').innerHTML=L.length?L.map(([u,k])=>'<div class="hi'+(u.undone?' un':'')+'"><div><b>'+esc(u.desc)+'</b><br><small>'+p2(u.t.getHours())+':'+p2(u.t.getMinutes())+' · '+u.n+' fila'+(u.n>1?'s':'')+(u.undone?' · ya deshecho':'')+'</small></div>'+(u.undone?'':'<button class="b o s" data-u="'+k+'">↩ Deshacer</button>')+'</div>').join(''):'<div class="em"><b>📋</b>Todavía no hiciste ningún cambio.</div>'}
+const disc=(rows,desc)=>apply(rows.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),rows.map(r=>({id:r.ID,set:{ELIMINADA:''}})),desc);
 /* ---------- eventos ---------- */
-$('#go').onclick=load;$('#tu').onclick=undo;
-$('#hb').onclick=()=>{$('#hs').hidden=!$('#hs').hidden;if(!$('#hs').hidden)hist()};$('#hx').onclick=()=>{$('#hs').hidden=true};
+$('#tu').onclick=undo;
+const closeV=()=>{$('#vw').hidden=true;$('#vf').src='about:blank';document.body.classList.remove('vo')};$('#vx').onclick=closeV;
+$('#hx').onclick=()=>{$('#hs').hidden=true};
 $('#hl').onclick=e=>{const b=e.target.closest('[data-u]');if(b){b.disabled=true;undoAt(+b.dataset.u)}};
-$('#gr').addEventListener('change',e=>{if(e.target.classList.contains('kp2'))dupSync(e.target.closest('.is'))});
-$('#ig').onclick=()=>{SHI=!SHI;F='all';draw()};
-$('#ch').onclick=e=>{const b=e.target.closest('[data-f]');if(b){F=b.dataset.f;SHOW=40;draw()}};
-$('#gr').addEventListener('click',async e=>{
- if(e.target.id==='mo'){SHOW+=40;draw();return}
- const b=e.target.closest('[data-a]');if(!b)return;const c=b.closest('.is'),it=ISS[+c.dataset.i];if(!it)return;const a=b.dataset.a,val=k=>{const s=c.querySelector('[data-k="'+k+'"]');return s?s.value:''};
- if(a==='ign'){IGN.has(it.key)?IGN.delete(it.key):IGN.add(it.key);saveIgn();draw();return}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeV();$('#hs').hidden=true}});
+$('#app').addEventListener('click',async e=>{
+ const v=e.target.closest('[data-v]');if(v){openNote(byId(v.dataset.v));return}
+ const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,c=b.closest('.cs'),it=CUR,val=k=>{const s=c&&c.querySelector('[data-k="'+k+'"]');return s?s.value:''};
+ if(a==='start'){RF=b.dataset.r;SK=new Set();MODE='review';TOT=queue().length;draw();window.scrollTo(0,0);return}
+ if(a==='home'){MODE='home';draw();return}
+ if(a==='again'){SK=new Set();TOT=queue().length;draw();return}
+ if(a==='unign'){ISS.forEach(x=>IGN.delete(x.key));saveIgn();draw();return}
+ if(a==='csv'){exportCsv();return}
+ if(!it)return;
+ if(a==='skip'){SK.add(it.key);draw();window.scrollTo(0,0);return}
+ if(a==='ign'){IGN.add(it.key);saveIgn();draw();window.scrollTo(0,0);return}
  b.disabled=true;let ok=false;
  try{
-  if(a==='dupapply'){const R=it.rows.slice(0,6),keepIds=new Set([...c.querySelectorAll('.kp2:checked')].map(x=>x.value)),d=R.filter(r=>!keepIds.has(r.ID));
-   if(!keepIds.size||!d.length)return;
-   ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Duplicado: descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+' (quedó '+keepIds.size+')')}
-  else if(a==='disc'){const d=[...c.querySelectorAll('.dx:checked')].map(x=>it.rows.find(r=>r.ID===x.value)).filter(Boolean);
-   if(!d.length){alert('Marca al menos una fila para descartar.');return}
-      ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+(it.rule==='cd'?' de canales digitales':' repetida'+(d.length>1?'s':'')))}
-  else if(a==='set'||a==='res'||a==='setall'){
-   const f={};if(a==='res'){const t=val('RESUMEN').trim();if(!t){alert('Escribe el resumen.');return}f.RESUMEN=t}
+  if(a==='keep'){const keep=it.rows.find(r=>r.ID===b.dataset.id),d=it.rows.filter(r=>r.ID!==b.dataset.id);ok=await disc(d,'Te quedaste con «'+keep.MEDIO+'» · se descartó '+d.length+' repetida'+(d.length>1?'s':''))}
+  else if(a==='del'){const d=it.rows.filter(r=>r.ID===b.dataset.id);ok=await disc(d,'Descartada 1 nota repetida')}
+  else if(a==='cdall'){ok=await disc(it.rows,'Descartadas '+it.rows.length+' filas de canales digitales')}
+  else if(a==='save'||a==='saveall'||a==='saveres'){
+   const f={};
+   if(a==='saveres'){const t=val('RESUMEN').trim();if(!t){alert('Escribe el resumen.');return}f.RESUMEN=t}
    else if(it.rule==='falt'){it.miss.forEach(k=>{if(val(k))f[k]=val(k)});if(!Object.keys(f).length){alert('Elige al menos un valor.');return}}
-   else{const k=it.field,v=val(k);if(!v){alert('Elige el valor correcto.');return}f[k]=v}
-   const rows=a==='setall'?it.all:it.rows;
-   ok=await apply(rows.map(r=>({id:r.ID,set:f})),rows.map(r=>({id:r.ID,set:Object.fromEntries(Object.keys(f).map(k=>[k,r[k]??'']))})),'Corregido ('+Object.keys(f).map(k=>LBL[k]||k.toLowerCase()).join(', ')+') en '+rows.length+' fila'+(rows.length>1?'s':''))}
-  else if(a==='unify'){const v=c.querySelector('input[type=radio]:checked').value,rows=it.all.filter(r=>String(r[it.field]||'').trim()!==v);
-   ok=await apply(rows.map(r=>({id:r.ID,set:{[it.field]:v}})),rows.map(r=>({id:r.ID,set:{[it.field]:r[it.field]}})),'Unificado en «'+v+'» ('+rows.length+' filas)')}
- }finally{if(!ok)b.disabled=false}
+   else{const k=it.field,x=val(k);if(!x){alert('Elige la opción correcta.');return}f[k]=x}
+   const rows=a==='saveall'?it.all:it.rows;
+   ok=await apply(rows.map(r=>({id:r.ID,set:f})),rows.map(r=>({id:r.ID,set:Object.fromEntries(Object.keys(f).map(k=>[k,r[k]??'']))})),'Corregido ('+Object.keys(f).map(k=>(LBL[k]||k).toLowerCase()).join(', ')+') en '+rows.length+' fila'+(rows.length>1?'s':''))}
+  else if(a==='unify'){const x=c.querySelector('input[name=uf]:checked').value,rows=it.all.filter(r=>String(r[it.field]||'').trim()!==x);ok=await apply(rows.map(r=>({id:r.ID,set:{[it.field]:x}})),rows.map(r=>({id:r.ID,set:{[it.field]:r[it.field]}})),'Unificado en «'+x+'» ('+rows.length+' filas)')}
+ }finally{if(!ok)b.disabled=false;else window.scrollTo(0,0)}
 });
-$('#ex').onclick=()=>{
- if(!ISS.length){alert('Primero analiza un periodo.');return}
- const cs=s=>'"'+String(s??'').replace(/"/g,'""')+'"',L=[['REGLA','GRAVEDAD','OBSERVACION','MEDIO','FECHA','TITULAR','URL','ID'].join(',')];
- ISS.filter(x=>!IGN.has(x.key)).forEach(x=>(x.all||x.rows).forEach(r=>L.push([RULES[x.rule][0],x.sev,x.title,r.MEDIO,r.FECHA,r.TITULAR,r.URL,r.ID].map(cs).join(','))));
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+L.join('\n')],{type:'text/csv'}));a.download='Reporte_calidad_'+ymd(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+function exportCsv(){const cs=s=>'"'+String(s??'').replace(/"/g,'""')+'"',L=[['TIPO DE OBSERVACION','OBSERVACION','MEDIO','FECHA','TITULAR','URL','ID'].join(',')];
+ vis().forEach(x=>(x.all||x.rows).forEach(r=>L.push([NAMES[x.rule][1],x.title,r.MEDIO,r.FECHA,r.TITULAR,r.URL,r.ID].map(cs).join(','))));
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+L.join('\n')],{type:'text/csv'}));a.download='Reporte_calidad_'+ymd(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+draw();
 </script></body></html>

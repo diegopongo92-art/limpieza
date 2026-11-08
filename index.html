@@ -58,6 +58,14 @@ details{margin-top:6px;font-size:12px}summary{cursor:pointer;font-weight:700;col
 #tt button{background:#fff;color:#1f1417;border:0;border-radius:8px;padding:6px 10px;font-size:12px}
 .mo{display:block;width:100%;text-align:center;margin:14px 0}
 @media(max-width:700px){h1{font-size:14px}.kt b{font-size:24px}.b{flex:1}.bar>div{flex:1 1 100%}.bar select{width:100%}.cm th,.cm td{min-width:180px}}
+
+th.kk{background:#ecfdf5!important}th.kd{background:#fef2f2!important}
+.kc{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:11px;font-weight:800}.kc input{width:18px;height:18px;flex:none;accent-color:#10b981}
+th.kk .kl{color:#065f46}th.kd .kl{color:#991b1b}
+.sm{border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;background:#f3f4f6;margin:2px 0 6px}.sm.ok{background:#ecfdf5;border:1px solid #a7f3d0}.sm.bad{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+#hs{position:fixed;inset:0;background:#0006;z-index:60;display:flex;justify-content:flex-end}#hs[hidden]{display:none}
+.hp{background:#fff;width:min(440px,100%);height:100%;overflow:auto;padding:16px}.hh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:15px}
+.hi{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--bd);border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:12.5px}.hi.un{opacity:.55}.hi .m{color:var(--mu);font-size:11px;font-weight:600}
 </style></head><body>
 <header><div><h1>Limpieza de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
 <div class="main">
@@ -65,12 +73,14 @@ details{margin-top:6px;font-size:12px}summary{cursor:pointer;font-weight:700;col
 <div><label>Analizar</label><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select></div>
 <button class="b" id="go">Analizar</button>
 <button class="b o" id="ex">Exportar reporte (CSV)</button>
+<button class="b o" id="hb">Historial y deshacer</button>
 <button class="b o" id="ig">Ver ignorados</button>
 </div>
 <div class="kp" id="kp"></div>
 <div class="ch" id="ch"></div>
 <div class="gr" id="gr"><div class="em" style="grid-column:1/-1"><b>🧹</b>Elige el periodo y pulsa Analizar.</div></div>
 </div>
+<div id="hs" hidden><div class="hp"><div class="hh"><b>Historial de esta sesión</b><button class="b o s" id="hx">Cerrar</button></div><p class="ro" style="margin:0 0 8px">Cada cambio se puede deshacer: las notas descartadas vuelven a contar y los valores vuelven a como estaban.</p><div id="hl"></div></div></div>
 <div id="tt"><span id="tm"></span><button id="tu" style="display:none">↩ Deshacer</button></div>
 <script>
 const API='https://script.google.com/macros/s/AKfycbzAQjXeJMaPzxnyxGYkLaufqw7sl0rLO1h-urvSPTbyJ3GEpsGExp8KMg2n3UYzFdnQ/exec',KEY='CAMILA';
@@ -82,7 +92,7 @@ const EJES=['Seguridad ciudadana','Defensa nacional','Política','Economía y fi
 const FLD={TONO:TO,EJE:EJES,ORIGEN:ORI,AMBITO:AMB};
 const LBL={TONO:'Criterio de imagen',EJE:'Eje de gestión',ORIGEN:'Origen de posicionamiento',AMBITO:'Ámbito geográfico'};
 const RULES={
- cd:['Canales digitales (eliminar)','alta'],dup:['Duplicados','alta'],url:['Misma URL','alta'],falt:['Faltan datos','alta'],val:['Opción mal escrita','alta'],
+ cd:['Canales digitales (eliminar)','alta'],dup:['Duplicados','alta'],falt:['Faltan datos','alta'],val:['Opción mal escrita','alta'],
  sus:['Categoría dudosa','media'],res:['Resumen','media'],var:['Escrito distinto','media'],
  fec:['Fecha','alta'],out:['Valor atípico','media'],tit:['Titular','baja'],pen:['Pendientes antiguas','media']};
 let USER='';try{USER=localStorage.getItem('usr')||''}catch(e){}
@@ -104,6 +114,15 @@ const mcomp=(x,y)=>x&&y&&(x===y||(x.length>=5&&y.length>=5&&(x.indexOf(y)>-1||y.
 const fmtD=r=>r._d?p2(r._d.getDate())+'/'+p2(r._d.getMonth()+1)+'/'+r._d.getFullYear()+' '+p2(r._d.getHours())+':'+p2(r._d.getMinutes()):'sin fecha';
 const isV=r=>String(r.ESTADO)==='Validada';
 const q=(a,p)=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.min(s.length-1,Math.floor(p*(s.length-1)))]:0};
+function uinfo(u){u=String(u||'').trim();if(!/^https?:\/\//i.test(u))return null;let x;try{x=new URL(u)}catch(e){return null}
+ const host=x.hostname.toLowerCase().replace(/^(www|m|amp|mobile)\./,'');let path='';try{path=decodeURIComponent(x.pathname)}catch(e){path=x.pathname}
+ path=path.toLowerCase().replace(/\/amp\/?$/,'').replace(/\.(html?|aspx?|php|amp)$/,'').replace(/\/+$/,'');
+ let qid='';['id','p','nid','article','articleid','idnota','noticia','story'].forEach(k=>{const v=x.searchParams.get(k);if(v&&/\d{3,}/.test(v))qid=v});
+ const nums=(path.match(/\d{5,}/g)||[]).sort((a,b)=>b.length-a.length),id=qid||nums[0]||'';
+ const slug=path.split('/').filter(Boolean).map(t=>t.replace(/\d{5,}/g,' ')).join(' ').replace(/[^a-z0-9]+/g,' ').trim();
+ return{host,id,slug,path,key:host+'|'+(id||path)}}
+const sw=t=>t.split(' ').filter(w=>w.length>2).length;
+const tipoK=t=>{t=ac(t);return/tele|tv/.test(t)?'tv':/radio/.test(t)?'radio':/impres|diario|prensa/.test(t)?'imp':/web|portal|digital/.test(t)?'web':nk(t)};
 const isCD=r=>/canal(es)?\s*digital|redes|youtube|tiktok|facebook|instagram|podcast/i.test(String(r.TIPO||''));
 function toast(m,undo){$('#tm').textContent=m;$('#tu').style.display=undo?'':'none';$('#tt').style.display='flex';clearTimeout(toast.t);toast.t=setTimeout(()=>$('#tt').style.display='none',undo?12000:3500)}
 const QEJE=[['Seguridad ciudadana',/\b(policia|policial|pnp|sicari|extorsi|delincu|crimen|criminal|inseguridad|serenazgo|robo|asalto|banda|estado de emergencia|narcotrafico|homicidio|seguridad ciudadana|mininter|ministro del interior|patrullaje|comisaria)/],
@@ -181,17 +200,17 @@ function detect(){
  const inDup=new Set();
  /* 0. canales digitales: no se monitorean */
  if(CD.length)add('cd','alta',CD.length+' fila'+(CD.length>1?'s':'')+' de «Canal Digital» / redes',CD,{k:'cd'});
- /* 1. duplicados */
- const day={};A.forEach(r=>{if(r._d)(day[ymd(r._d)]=day[ymd(r._d)]||[]).push(r)});
- Object.values(day).forEach(L=>{
-  const n=L.length,P=L.map((_,i)=>i),f=i=>{while(P[i]!==i)i=P[i]=P[P[i]];return i},T=L.map(r=>nt(r.TITULAR)),M=L.map(r=>mkey(r.MEDIO));
-  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(mcomp(M[i],M[j])&&simT(T[i],T[j]))P[f(i)]=f(j);
-  const g={};L.forEach((r,i)=>(g[f(i)]=g[f(i)]||[]).push(r));
-  Object.values(g).filter(x=>x.length>1).forEach(x=>{x.forEach(r=>inDup.add(r.ID));add('dup','alta','Posible duplicado en '+x[0].MEDIO,rank(x))});
- });
- /* 2. misma URL */
- const um={};A.forEach(r=>{const u=nu(r.URL);if(/^https?:\/\//.test(u)&&u.length>20)(um[u]=um[u]||[]).push(r)});
- Object.values(um).filter(x=>x.length>1&&!x.every(r=>inDup.has(r.ID))).forEach(x=>{x.forEach(r=>inDup.add(r.ID));add('url','alta','Misma URL en '+x.length+' filas',rank(x))});
+ /* 1. duplicados: titular parecido (mismo medio + mismo tipo + mismo día) o mismo enlace / enlace casi igual (nota web actualizada) */
+ const P=A.map((_,i)=>i),fd=i=>{while(P[i]!==i)i=P[i]=P[P[i]];return i},un=(a,b)=>{P[fd(a)]=fd(b)};
+ const UI=A.map(r=>uinfo(r.URL)),TT=A.map(r=>nt(r.TITULAR)),MM=A.map(r=>mkey(r.MEDIO)),TP=A.map(r=>tipoK(r.TIPO)),DY=A.map(r=>r._d?Math.floor(r._d.getTime()/864e5):NaN),byDay={};
+ A.forEach((r,i)=>{if(r._d)(byDay[ymd(r._d)]=byDay[ymd(r._d)]||[]).push(i)});
+ Object.values(byDay).forEach(L=>{for(let a=0;a<L.length;a++)for(let b=a+1;b<L.length;b++){const i=L[a],j=L[b];if(TP[i]===TP[j]&&mcomp(MM[i],MM[j])&&simT(TT[i],TT[j]))un(i,j)}});
+ const byHost={};A.forEach((r,i)=>{if(UI[i])(byHost[UI[i].host]=byHost[UI[i].host]||[]).push(i)});
+ Object.values(byHost).forEach(L=>{const byK={};L.forEach(i=>(byK[UI[i].key]=byK[UI[i].key]||[]).push(i));
+  Object.values(byK).forEach(g=>{if(g.length>1&&(UI[g[0]].id||UI[g[0]].path.length>12))for(let k=1;k<g.length;k++)un(g[0],g[k])});
+  if(L.length>1&&L.length<1500)for(let a=0;a<L.length;a++)for(let b=a+1;b<L.length;b++){const i=L[a],j=L[b];if(Math.abs(DY[i]-DY[j])<=2&&sw(UI[i].slug)>=5&&sw(UI[j].slug)>=5&&jac(UI[i].slug,UI[j].slug)>=.7)un(i,j)}});
+ const gg={};A.forEach((r,i)=>(gg[fd(i)]=gg[fd(i)]||[]).push(r));
+ Object.values(gg).filter(g=>g.length>1).forEach(g=>{g.forEach(r=>inDup.add(r.ID));const rows=rank(g);add('dup','alta','Posible duplicado en '+rows[0].MEDIO,rows)});
  /* 3. faltan datos  y  4. opción mal escrita  y  5. categoría dudosa */
  const bad={};
  A.forEach(r=>{
@@ -236,20 +255,34 @@ function cmpTable(it,i){
  const R=it.rows.slice(0,6),big=it.rows.length>5,tk=r=>nt(r.TITULAR).split(' ').filter(Boolean);
  const common=new Set(tk(R[0]).filter(w=>R.every(r=>tk(r).includes(w))));
  const hl=t=>String(t||'').split(/(\s+)/).map(w=>{const k=nt(w);return k&&!common.has(k)?'<mark>'+esc(w)+'</mark>':esc(w)}).join('');
- const F=[['Medio',r=>r.MEDIO],['Fecha y hora',fmtD],['Tipo',r=>r.TIPO],['Titular',r=>r.TITULAR,r=>hl(r.TITULAR)],['Resumen',r=>nt(r.RESUMEN),r=>esc(String(r.RESUMEN||'').slice(0,170))+(String(r.RESUMEN||'').length>170?'…':'')],['Enlace',r=>nu(r.URL),r=>String(r.URL||'')?'<a class="ab" target="_blank" rel="noopener" href="'+esc(r.URL)+'">abrir ↗</a><br><span style="color:#9ca3af">'+esc(String(r.URL).replace(/^https?:\/\/(www\.)?/,'').slice(0,46))+'</span>':'—'],['Estado',r=>r.ESTADO],['Criterio',r=>r.TONO],['Eje',r=>r.EJE],['Origen',r=>r.ORIGEN],['Ámbito',r=>r.AMBITO],['Revisó',r=>r.REVISADO_POR]];
- let h='<div class="tw"><table class="cm"><tr><th></th>'+R.map((r,j)=>'<th>'+(j?'<label><input type="checkbox" class="dx" value="'+esc(r.ID)+'"'+(big?'':' checked')+'> Descartar</label>':'<span class="se">Se queda</span>')+'</th>').join('')+'</tr>';
- F.forEach(([l,v,d])=>{const vals=R.map(r=>String(v(r)||'').trim()),same=vals.every(x=>x===vals[0]);h+='<tr><td>'+l+'</td>'+R.map((r,j)=>'<td class="'+(vals[j]===''?'empty':same?'eq':'df')+'">'+(vals[j]===''?'vacío':(d?d(r):esc(vals[j])))+(same&&vals[j]!==''&&l!=='Titular'?'':'')+'</td>').join('')+'</tr>'});
+ const F=[['Medio',r=>r.MEDIO],['Tipo',r=>r.TIPO],['Fecha y hora',fmtD],['Titular',r=>r.TITULAR,r=>hl(r.TITULAR)],['Resumen',r=>nt(r.RESUMEN),r=>esc(String(r.RESUMEN||'').slice(0,170))+(String(r.RESUMEN||'').length>170?'…':'')],['Enlace',r=>{const u=uinfo(r.URL);return u?u.key:String(r.URL||'')},r=>{const u=uinfo(r.URL);return String(r.URL||'')?'<a class="ab" target="_blank" rel="noopener" href="'+esc(r.URL)+'">abrir nota ↗</a><br><span style="color:#6b5d61">'+(u?esc(u.host)+(u.id?' · id '+esc(u.id):''):'enlace no válido')+'</span>':'—'}],['Estado',r=>r.ESTADO],['Criterio',r=>r.TONO],['Eje',r=>r.EJE],['Origen',r=>r.ORIGEN],['Ámbito',r=>r.AMBITO],['Revisó',r=>r.REVISADO_POR]];
+ let h='<div class="tw"><table class="cm"><tr><th></th>'+R.map((r,j)=>'<th><label class="kc"><input type="checkbox" class="kp2" value="'+esc(r.ID)+'"'+(big||j===0?' checked':'')+'><span class="kl"></span></label></th>').join('')+'</tr>';
+ F.forEach(([l,v,d])=>{const vals=R.map(r=>String(v(r)||'').trim()),same=vals.every(x=>x===vals[0]);h+='<tr><td>'+l+'</td>'+R.map((r,j)=>'<td class="'+(vals[j]===''?'empty':same?'eq':'df')+'">'+(vals[j]===''?'vacío':(d?d(r):esc(vals[j])))+'</td>').join('')+'</tr>'});
  return h+'</table></div>';
+}
+function dupSync(c){
+ const it=ISS[+c.dataset.i];if(!it)return;const ks=[...c.querySelectorAll('.kp2')],keep=ks.filter(x=>x.checked).length,del=ks.length-keep;
+ ks.forEach(x=>{const th=x.closest('th'),sp=th.querySelector('.kl');th.className=x.checked?'kk':'kd';sp.textContent=x.checked?'✔ SE CONSERVA':'✖ SE DESCARTA'});
+ const sm=c.querySelector('.sm'),bt=c.querySelector('[data-a=dupapply]');
+ if(!keep){sm.className='sm bad';sm.innerHTML='⚠ Tienes que dejar al menos una nota marcada como <b>«Se conserva»</b>.';bt.disabled=true;bt.textContent='Aplicar'}
+ else if(!del){sm.className='sm';sm.innerHTML='No se descartará nada: todas se conservan y siguen contando en el dashboard.';bt.disabled=true;bt.textContent='Nada que descartar'}
+ else{sm.className='sm ok';sm.innerHTML='✔ Se conservan <b>'+keep+'</b> y siguen contando.<br>✖ Se descartan <b>'+del+'</b>: dejan de contar, pero <b>no se borran</b> (quedan en la hoja «Descartadas» y puedes restaurarlas con «Deshacer» o en Historial).';bt.disabled=false;bt.textContent='Aplicar: conservar '+keep+' · descartar '+del}
 }
 function card(it,i){
  let b='',w='',ign='<button class="b o s" data-a="ign">'+(IGN.has(it.key)?'Dejar de ignorar':'Ignorar')+'</button>',wide='';
  const rule=it.rule,r0=it.rows[0];
- if(rule==='dup'||rule==='url'){
-  const R=it.rows,sim=Math.min(...R.slice(1).map(r=>jac(R[0].TITULAR,r.TITULAR))),same=R.every(r=>mcomp(mkey(r.MEDIO),mkey(R[0].MEDIO))),sd=R.every(r=>r._d&&R[0]._d&&ymd(r._d)===ymd(R[0]._d)),su=R.every(r=>nu(r.URL)&&nu(r.URL)===nu(R[0].URL)),nu0=R.some(r=>!nu(r.URL));
-  const ch='<div class="chips"><span class="cx '+(same?'y':'a')+'">'+(same?'Mismo medio':'Medios distintos')+'</span><span class="cx '+(sd?'y':'a')+'">'+(sd?'Mismo día':'Días distintos')+'</span><span class="cx '+(sim>=.85?'y':'a')+'">Titular '+Math.round(sim*100)+'% parecido</span><span class="cx '+(su?'y':nu0?'':'a')+'">'+(su?'Misma URL':nu0?'URL faltante':'URL distinta')+'</span></div>';
-  const vd=su?'<p class="vd y">Es la misma nota: comparten URL.</p>':sim>=.85&&same?'<p class="vd y">Casi seguro es la misma nota.</p>':'<p class="vd a">Podría ser la misma nota o dos notas distintas: compara abajo.</p>';
-  w=WT(rule==='url'?'La misma URL aparece en <b>'+R.length+'</b> filas.':'<b>'+R.length+'</b> filas del mismo medio y día tienen titulares casi iguales. Lo amarillo es lo que cambia entre ellas.',R.length>5?'Grupo grande: puede mezclar notas distintas. Marca solo las que de verdad sobran.':'Si es la misma nota, deja marcada la(s) que sobra(n) y pulsa Descartar. La primera columna es la que se queda (la más completa).');
-  b=vd+ch+cmpTable(it,i)+(R.length>6?'<div class="ro">Se muestran 6 de '+R.length+'. Descarta estas y vuelve a analizar.</div>':'')+'<div class="fx"><button class="b s" data-a="disc">Descartar las marcadas</button>'+ign+'</div>';wide=' w';
+ if(rule==='dup'){
+  const R=it.rows,sim=Math.min(...R.slice(1).map(r=>jac(R[0].TITULAR,r.TITULAR))),same=R.every(r=>mcomp(mkey(r.MEDIO),mkey(R[0].MEDIO))),sd=R.every(r=>r._d&&R[0]._d&&ymd(r._d)===ymd(R[0]._d)),st=R.every(r=>tipoK(r.TIPO)===tipoK(R[0].TIPO));
+  const ui=R.map(r=>uinfo(r.URL)),all=ui.every(Boolean),sameUrl=all&&ui.every(u=>u.key===ui[0].key),nearUrl=!sameUrl&&all&&ui.every(u=>u.host===ui[0].host&&sw(u.slug)>=5&&jac(u.slug,ui[0].slug)>=.7),noU=ui.some(u=>!u);
+  let vd,cl='y';
+  if(sameUrl&&sim<.85)vd='Es la misma nota actualizada: el medio cambió el titular, pero el enlace es el mismo.';
+  else if(sameUrl)vd='Es la misma nota: comparten el mismo enlace.';
+  else if(nearUrl&&sim<.85)vd='Muy probablemente es la misma nota web actualizada: el enlace es casi idéntico.';
+  else if(sim>=.85&&same&&st)vd='Casi seguro es la misma nota.';
+  else{vd='Podría ser la misma nota o dos notas distintas: compara abajo antes de descartar.';cl='a'}
+  const ch='<div class="chips"><span class="cx '+(same?'y':'a')+'">'+(same?'Mismo medio':'Medios distintos')+'</span><span class="cx '+(st?'y':'a')+'">'+(st?'Mismo tipo ('+esc(R[0].TIPO)+')':'Tipos distintos')+'</span><span class="cx '+(sd?'y':'a')+'">'+(sd?'Mismo día':'Días distintos')+'</span><span class="cx '+(sim>=.85?'y':'a')+'">Titular '+Math.round(sim*100)+'% parecido</span><span class="cx '+(sameUrl?'y':nearUrl?'y':noU?'':'a')+'">'+(sameUrl?'Mismo enlace':nearUrl?'Enlace casi igual':noU?'Enlace faltante':'Enlace distinto')+'</span></div>';
+  w=WT('Hay <b>'+R.length+'</b> filas que parecen la misma mención. Lo amarillo es lo que cambia entre ellas.','Revisa la tabla. Cada nota tiene una casilla: <b>marcada = se conserva</b>, <b>sin marcar = se descarta</b>. Ya viene elegida la más completa; cámbiala si prefieres otra.');
+  b='<p class="vd '+cl+'">'+vd+'</p>'+ch+cmpTable(it,i)+(R.length>6?'<div class="ro">Se muestran 6 de '+R.length+'. Resuelve estas y vuelve a analizar.</div>':'')+'<div class="sm"></div><div class="fx"><button class="b k s" data-a="dupapply"></button><button class="b o s" data-a="ign">No son duplicados · dejar todas</button></div><div class="ro">🔒 Nada se borra: lo descartado va a la hoja «Descartadas» y se puede restaurar.</div>';wide=' w';
  }else if(rule==='cd'){
   w=WT('El monitoreo no incluye canales digitales ni redes, pero hay <b>'+it.rows.length+'</b> filas de ese tipo en el periodo.','Revisa la lista y descarta las que sobran. Todas vienen marcadas.');
   b='<div style="max-height:320px;overflow:auto">'+it.rows.slice(0,150).map(r=>'<div class="rw"><label class="k"><input type="checkbox" class="dx" value="'+esc(r.ID)+'" checked><div>'+head(r)+'<span class="t">'+esc(r.TITULAR)+'</span></div></label></div>').join('')+'</div>'+(it.rows.length>150?'<div class="ro">Se muestran 150 de '+it.rows.length+'; al terminar vuelve a analizar.</div>':'')+'<div class="fx"><button class="b s" data-a="disc">Descartar las marcadas</button>'+ign+'</div>';
@@ -272,7 +305,7 @@ function card(it,i){
   const ex=rule==='fec'?'Esta columna no se edita desde aquí: corrígela en el Google Sheet.':rule==='pen'?'Valídala o descártala desde el formulario.':rule==='out'?(it.why||''):'Solo reporte: corrígelo en el formulario o en el Sheet si hace falta.';
   w=WT((rule==='fec'?'La fecha de esta nota tiene un problema: ':rule==='pen'?'Nota pendiente: ':rule==='out'?'Valor sospechoso: ':'Revisar: ')+'<b>'+esc(it.title)+'</b>.',ex);b=rowH(r0)+'<div class="fx">'+ign+'</div>';
  }
- return'<div class="is '+it.sev+wide+'" data-i="'+i+'"><div class="ih"><h3>'+esc(it.title)+'</h3><span class="sv '+it.sev+'">'+it.sev+'</span></div>'+w+b+'</div>';
+ return'<div class="is '+it.sev+wide+'" data-i="'+i+'"'+(rule==='dup'?' data-dup="1"':'')+'><div class="ih"><h3>'+esc(it.title)+'</h3><span class="sv '+it.sev+'">'+it.sev+'</span></div>'+w+b+'</div>';
 }
 function draw(){
  const live=ROWS.filter(r=>!r._del),A=live.filter(r=>!isCD(r)),vis=ISS.filter(x=>SHI?IGN.has(x.key):!IGN.has(x.key)),cnt={};vis.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
@@ -282,10 +315,11 @@ function draw(){
  $('#ch').innerHTML='<button class="cp'+(F==='all'?' on':'')+'" data-f="all">Todas<b>'+vis.length+'</b></button>'+Object.keys(RULES).filter(k=>cnt[k]).map(k=>'<button class="cp'+(F===k?' on':'')+'" data-f="'+k+'">'+RULES[k][0]+'<b>'+cnt[k]+'</b></button>').join('');
  const order={alta:0,media:1,baja:2},keys=Object.keys(RULES),L=vis.filter(x=>F==='all'||x.rule===F).sort((a,b)=>order[a.sev]-order[b.sev]||keys.indexOf(a.rule)-keys.indexOf(b.rule));
  $('#gr').innerHTML=L.length?L.slice(0,SHOW).map(x=>card(x,ISS.indexOf(x))).join('')+(L.length>SHOW?'<button class="b o mo" id="mo" style="grid-column:1/-1">Mostrar más ('+(L.length-SHOW)+')</button>':''):'<div class="em" style="grid-column:1/-1"><b>✨</b>'+(ROWS.length?(SHI?'No hay observaciones ignoradas.':'Sin observaciones en esta categoría.'):'Elige el periodo y pulsa Analizar.')+'</div>';
+ document.querySelectorAll('.is[data-dup]').forEach(dupSync);
  $('#ig').textContent=SHI?'Ver pendientes':'Ver ignorados ('+ISS.filter(x=>IGN.has(x.key)).length+')';
 }
 /* ---------- guardar cambios ---------- */
-async function apply(items,inv,desc){
+async function apply(items,inv,desc,rec){
  if(!items.length)return false;
  if(items.length>15&&!confirm(desc+'\n\nSe modificarán '+items.length+' filas. ¿Continuar?'))return false;
  let fall=[];
@@ -299,13 +333,17 @@ async function apply(items,inv,desc){
  const bad=new Set(fall),byId={};ROWS.forEach(r=>byId[r.ID]=r);
  items.forEach(it=>{if(bad.has(it.id))return;const r=byId[it.id];if(!r)return;Object.keys(it.set).forEach(k=>{r[k]=it.set[k]});r._del=String(r.ELIMINADA)==='1'});
  const good=items.filter(it=>!bad.has(it.id)),ginv=inv.filter(it=>!bad.has(it.id));
- DONE+=good.length;UND.push({inv:ginv,desc});detect();
+ DONE+=good.length;if(rec!==false)UND.push({inv:ginv,desc,t:new Date(),n:good.length});detect();if(!$('#hs').hidden)hist();
  toast(fall.length?'✓ '+good.length+' guardadas · '+fall.length+' no se pudieron aplicar':'✓ '+desc,true);return true;
 }
-async function undo(){const u=UND.pop();if(!u)return;$('#tt').style.display='none';
- const r=await apply(u.inv,[],'Deshecho: '+u.desc);if(r){UND.pop();DONE=Math.max(0,DONE-u.inv.length*2);toast('↩ Deshecho: '+u.desc)}else UND.push(u)}
+async function undoAt(k){const u=UND[k];if(!u||u.undone)return false;const r=await apply(u.inv,[],'Deshecho: '+u.desc,false);if(r){u.undone=true;DONE=Math.max(0,DONE-(u.n||0));draw();if(!$('#hs').hidden)hist();toast('↩ Deshecho: '+u.desc)}return r}
+function undo(){$('#tt').style.display='none';for(let k=UND.length-1;k>=0;k--)if(!UND[k].undone)return undoAt(k)}
+function hist(){const L=UND.map((u,k)=>[u,k]).reverse();$('#hl').innerHTML=L.length?L.map(([u,k])=>'<div class="hi'+(u.undone?' un':'')+'"><div><b>'+esc(u.desc)+'</b><br><span class="m">'+p2(u.t.getHours())+':'+p2(u.t.getMinutes())+' · '+u.n+' fila'+(u.n>1?'s':'')+(u.undone?' · ya deshecho':'')+'</span></div>'+(u.undone?'':'<button class="b o s" data-u="'+k+'">↩ Deshacer</button>')+'</div>').join(''):'<div class="em"><b>📋</b>Aún no hiciste cambios en esta sesión.</div>'}
 /* ---------- eventos ---------- */
 $('#go').onclick=load;$('#tu').onclick=undo;
+$('#hb').onclick=()=>{$('#hs').hidden=!$('#hs').hidden;if(!$('#hs').hidden)hist()};$('#hx').onclick=()=>{$('#hs').hidden=true};
+$('#hl').onclick=e=>{const b=e.target.closest('[data-u]');if(b){b.disabled=true;undoAt(+b.dataset.u)}};
+$('#gr').addEventListener('change',e=>{if(e.target.classList.contains('kp2'))dupSync(e.target.closest('.is'))});
 $('#ig').onclick=()=>{SHI=!SHI;F='all';draw()};
 $('#ch').onclick=e=>{const b=e.target.closest('[data-f]');if(b){F=b.dataset.f;SHOW=40;draw()}};
 $('#gr').addEventListener('click',async e=>{
@@ -314,10 +352,12 @@ $('#gr').addEventListener('click',async e=>{
  if(a==='ign'){IGN.has(it.key)?IGN.delete(it.key):IGN.add(it.key);saveIgn();draw();return}
  b.disabled=true;let ok=false;
  try{
-  if(a==='disc'){const d=[...c.querySelectorAll('.dx:checked')].map(x=>it.rows.find(r=>r.ID===x.value)).filter(Boolean);
+  if(a==='dupapply'){const R=it.rows.slice(0,6),keepIds=new Set([...c.querySelectorAll('.kp2:checked')].map(x=>x.value)),d=R.filter(r=>!keepIds.has(r.ID));
+   if(!keepIds.size||!d.length)return;
+   ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Duplicado: descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+' (quedó '+keepIds.size+')')}
+  else if(a==='disc'){const d=[...c.querySelectorAll('.dx:checked')].map(x=>it.rows.find(r=>r.ID===x.value)).filter(Boolean);
    if(!d.length){alert('Marca al menos una fila para descartar.');return}
-   if(it.rule!=='cd'&&d.length>=it.rows.length){alert('No puedes descartar todas: una debe quedarse.');return}
-   ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+(it.rule==='cd'?' de canales digitales':' repetida'+(d.length>1?'s':'')))}
+      ok=await apply(d.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),d.map(r=>({id:r.ID,set:{ELIMINADA:''}})),'Descartada'+(d.length>1?'s '+d.length+' filas':' 1 fila')+(it.rule==='cd'?' de canales digitales':' repetida'+(d.length>1?'s':'')))}
   else if(a==='set'||a==='res'||a==='setall'){
    const f={};if(a==='res'){const t=val('RESUMEN').trim();if(!t){alert('Escribe el resumen.');return}f.RESUMEN=t}
    else if(it.rule==='falt'){it.miss.forEach(k=>{if(val(k))f[k]=val(k)});if(!Object.keys(f).length){alert('Elige al menos un valor.');return}}

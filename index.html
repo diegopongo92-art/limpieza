@@ -64,6 +64,7 @@ a.lk,.lk{background:none;border:0;color:#2563eb;font-weight:700;font-size:13px;p
 .e{color:#dc2626;font-weight:800}
 @media(max-width:760px){.split{grid-template-columns:1fr}}
 .ps{width:100%;font-weight:600;font-size:13px;padding:8px 9px}.fp .sg{margin-top:4px}
+.eb{margin-top:2px}.eb summary{cursor:pointer;font-weight:700;color:#2563eb;font-size:12.5px}.ebg{display:grid;gap:8px;margin-top:8px}.ebg label{display:grid;gap:3px;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--mu)}.ebg select{width:100%;font-weight:500;text-transform:none;font-size:13px;padding:8px}
 </style></head><body>
 <header><div><h1>Revisión de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
 <div class="main">
@@ -213,7 +214,7 @@ function detect(){
   if(isV(r)){const miss=['TONO','EJE','ORIGEN','AMBITO'].filter(k=>!String(r[k]||'').trim());if(miss.length)add('falt','alta','Validada con '+miss.length+' dato'+(miss.length>1?'s':'')+' sin llenar',[r],{miss})}
   Object.keys(FLD).forEach(k=>{const v=String(r[k]||'').trim();if(v&&(k==='ETIQUETA'?(TAGSALL.length&&TAGSALL.indexOf(v)<0):FLD[k].indexOf(v)<0))(bad[k+'|'+v]=bad[k+'|'+v]||[]).push(r)});
   if(isV(r))['EJE','ORIGEN','AMBITO','ETIQUETA'].forEach(k=>{const cur=String(r[k]||'').trim(),et=k==='ETIQUETA';if(et){if(!TAGS.length||(cur&&TAGSALL.indexOf(cur)<0))return}else if(!cur||FLD[k].indexOf(cur)<0)return;const s=sugg(r,k);if(!s||s.v===cur)return;
-   const need=k==='AMBITO'?7:et?8:6;if(s.w>=need&&(s.sc[cur]||0)<2)add('sus','media',et&&!cur?'Podría llevar la etiqueta «'+s.v+'»':'«'+cur+'» podría estar mal en '+LBL[k].toLowerCase(),[r],{field:k,cur,sug:s.v,terms:s.terms,k:k+cur+s.v})});
+   const need=k==='AMBITO'?7:et?4:6;if(s.w>=need&&(s.sc[cur]||0)<2)add('sus','media',et&&!cur?'Podría llevar la etiqueta «'+s.v+'»':'«'+cur+'» podría estar mal en '+LBL[k].toLowerCase(),[r],{field:k,cur,sug:s.v,terms:s.terms,k:k+cur+s.v})});
  });
  Object.keys(bad).forEach(kv=>{const [k,v]=kv.split('|'),L=bad[kv],sg=(k==='ORIGEN'&&/^(nota de prensa|actividad oficial o declaraci)/i.test(v)?'Actividad oficial / declaración presidencial':'')||FLD[k].find(o=>nk(o)===nk(v))||FLD[k].find(o=>nk(o).startsWith(nk(v))&&nk(v).length>=4)||'';
   add('val','alta',LBL[k]+': «'+v+'» no existe en el formulario',L.slice(0,4),{field:k,val:v,all:L,sug:sg,k:k+v})});
@@ -241,7 +242,7 @@ function detect(){
 }
 function rank(x){const sc=r=>(isV(r)?4:0)+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].filter(k=>String(r[k]||'').trim()).length+(/lima/i.test(String(r.REGION||'')+' '+r.MEDIO)?1:0);return x.slice().sort((a,b)=>sc(b)-sc(a)||(a._d||0)-(b._d||0))}
 /* ====================== INTERFAZ SIMPLE: un caso a la vez ====================== */
-let MODE='home',SK=new Set(),TOT=0,CUR=null,RF='all';
+let ONE=null,MODE='home',SK=new Set(),TOT=0,CUR=null,RF='all';
 const NAMES={cd:['📺','Canales digitales (no se monitorean)'],dup:['🔁','Posibles notas repetidas'],falt:['📝','Notas validadas con datos sin llenar'],val:['✏️','Opciones mal escritas'],sus:['🤔','Categorías que parecen equivocadas'],res:['📄','Resúmenes vacíos o raros'],var:['🔤','Cosas escritas de dos maneras'],fec:['📅','Fechas raras'],out:['📈','Montos raros'],tit:['🏷️','Titulares raros']};
 const ORDER=Object.keys(NAMES);
 const vis=()=>ISS.filter(x=>!IGN.has(hk(x.key)));
@@ -259,13 +260,15 @@ function fieldsPanel(r,hi,o){hi=hi||[];o=o||{};const v=k=>String(r[k]||'').trim(
   else body=k==='TONO'?(v(k)?tonePill(v(k)):'<span class="e">falta</span>'):v(k)?esc(v(k)):k==='ETIQUETA'?'<span style="color:#9ca3af">ninguna</span>':'<span class="e">falta</span>';
   const h=hi.indexOf(k)>-1;return'<div class="fr'+(h?' hh2':'')+'"><small>'+PL[k]+(h?' <em style="display:inline">← aquí</em>':'')+'</small><div>'+body+'</div></div>'};
  return'<div class="fp"><h4>Datos de la nota'+(o.edit?' <span style="text-transform:none;font-weight:600">· puedes cambiarlos</span>':'')+'</h4>'+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].map(row).join('')+(o.edit&&o.btn!==false?'<button class="b o s" data-a="savepanel" style="width:100%;margin-top:4px">💾 Guardar cambios</button>':'')+'</div>'}
+function editBox(r){const v=k=>String(r[k]||'').trim(),lst={TONO:TO,EJE:EJES,ORIGEN:ORI,AMBITO:AMB,ETIQUETA:TAGS};
+ return'<details class="eb"><summary>✏️ Cambiar categorías de esta nota</summary><div class="ebg">'+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].map(k=>{const cur=v(k),L=lst[k].slice();if(cur&&L.indexOf(cur)<0)L.unshift(cur);return'<label>'+PL[k]+'<select class="pn" data-id="'+esc(r.ID)+'" data-p="'+k+'" data-o="'+esc(cur)+'" style="'+(k==='TONO'?toneStyle(cur):'')+'"><option value="">'+(k==='ETIQUETA'?'(ninguna)':'— elegir —')+'</option>'+L.map(x=>'<option'+(x===cur?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></label>'}).join('')+'<button class="b o s" data-a="savenote" data-id="'+esc(r.ID)+'">💾 Guardar cambios</button></div></details>'}
 const split=(r,o,hi,po)=>'<div class="split">'+noteCard(r,Object.assign({noF:1},o||{}))+fieldsPanel(r,hi,po)+'</div>';
 function noteCard(r,o){o=o||{};const em=k=>k==='TONO'&&String(r[k]||'').trim()?tonePill(r[k]):String(r[k]||'').trim()?'<span>'+esc(r[k])+'</span>':'<span class="e">sin '+({TONO:'criterio',EJE:'eje',ORIGEN:'origen',AMBITO:'ámbito'}[k])+'</span>';
  const res=String(r.RESUMEN||'').trim();
  return'<div class="nc'+(o.rec?' rec':'')+'"><div class="nm"><b>'+esc(r.MEDIO)+'</b><span>'+esc(r.TIPO)+' · '+fmtD(r)+'</span><span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+(o.rec?'<span class="bd r">Sugerida: la más completa</span>':'')+'</div>'+
  '<div class="nt">'+(o.hl||esc(r.TITULAR))+'</div>'+(res?'<div class="ns">'+(o.hlr||esc(res))+'</div>':'<div class="ns" style="color:#dc2626">Sin resumen</div>')+
  (o.noF?'':'<div class="nf">'+['TONO','EJE','ORIGEN','AMBITO'].map(em).join('')+'</div>')+
- (String(r.URL||'').trim()?'<div><button class="b o s" data-v="'+esc(r.ID)+'">👁 Ver nota aquí</button></div>':'<div class="hint">Esta fila no tiene enlace.</div>')+(o.btn||'')+'</div>'}
+ (String(r.URL||'').trim()?'<div><button class="b o s" data-v="'+esc(r.ID)+'">👁 Ver nota aquí</button></div>':'<div class="hint">Esta fila no tiene enlace.</div>')+(o.edit?editBox(r):'')+(o.btn||'')+'</div>'}
 function openNote(r){if(!r)return;const u=String(r.URL||'').trim();if(!/^https?:/i.test(u))return;$('#vt').textContent=r.MEDIO+' · '+r.TITULAR;$('#vo').href=u;$('#vf').src=u;$('#vw').hidden=false;document.body.classList.add('vo')}
 const btnLeave='<button class="b o" data-a="ign">Dejar como está</button>';
 const foot=(extra)=>'<div class="foot"><button class="lk" data-a="skip">Saltar por ahora →</button>'+(extra||'')+'</div>';
@@ -285,7 +288,7 @@ function caseHTML(it){
   const hl=r=>String(r.TITULAR||'').split(/(\s+)/).map(w=>{const k=nt(w);return k&&!common.has(k)?'<mark>'+esc(w)+'</mark>':esc(w)}).join('');
   const L=R.slice(0,pair?2:6);
   h='<h2>¿Es la misma nota dos veces?</h2><p class="sub">Si lo es, deja solo una. La otra se descarta (no se borra).</p><div class="vd '+cl+'">'+vd+'</div><div class="nts">'+
-   L.map((r,j)=>noteCard(r,{rec:j===0,hl:hl(r),btn:'<div class="ac">'+(pair?'<button class="b k" data-a="keep" data-id="'+esc(r.ID)+'">✔ Quedarme con esta<br><small style="font-weight:500">la otra se descarta</small></button>':'<button class="b o" data-a="del" data-id="'+esc(r.ID)+'">✖ Descartar solo esta</button>')+'</div>'})).join('')+'</div>'+
+   L.map((r,j)=>noteCard(r,{rec:j===0,hl:hl(r),edit:1,btn:'<div class="ac">'+(pair?'<button class="b k" data-a="keep" data-id="'+esc(r.ID)+'">✔ Quedarme con esta<br><small style="font-weight:500">la otra se descarta</small></button>':'<button class="b o" data-a="del" data-id="'+esc(r.ID)+'">✖ Descartar solo esta</button>')+'</div>'})).join('')+'</div>'+
    (R.length>6?'<div class="hint">Se muestran 6 de '+R.length+'. Resuelve estas y vuelve a revisar.</div>':'')+
    '<div class="ac"><button class="b o" data-a="ign">No son iguales · dejar todo como está</button></div>'+foot();
  }else if(rule==='cd'){
@@ -316,6 +319,8 @@ function draw(){
  const A=$('#app'),live=ROWS.filter(r=>!r._del&&isV(r)&&!isCD(r)),V=vis(),cnt={};V.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
  if(!ROWS.length){A.innerHTML='<div class="hero"><h2>Revisemos que todo esté bien 🧹</h2><p>Elige el periodo y pulsa el botón. Reviso solo las notas <b>ya validadas</b> (las pendientes todavía no se tocan). Voy a buscar notas repetidas, datos sin llenar y categorías dudosas.<br><b>Todavía no se cambia nada.</b></p><div class="pick"><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select><button class="b big" id="go">Revisar mis datos</button></div></div>';bind();return}
  const bar='<div class="pick" style="justify-content:flex-start;margin-bottom:12px"><select id="rg"><option value="7"'+(RGV==='7'?' selected':'')+'>Últimos 7 días</option><option value="30"'+(RGV==='30'?' selected':'')+'>Últimos 30 días</option><option value="90"'+(RGV==='90'?' selected':'')+'>Últimos 90 días</option><option value="0"'+(RGV==='0'?' selected':'')+'>Todo el historial</option></select><button class="b o s" id="go">Revisar de nuevo</button><button class="b o s" id="hb">↩ Lo que hice (deshacer)</button></div>';
+ if(MODE==='one'){const r=byId(ONE);if(!r||r._del){MODE='home';draw();return}CUR={rule:'edit',rows:[r],key:'edit|'+r.ID};const x=sugg(r,'ETIQUETA'),hn=TAGS.length?(x&&x.w>=4?{ETIQUETA:'Sugerido: <b>'+esc(x.v)+'</b>'}:{}):{ETIQUETA:'No pude cargar tu lista de etiquetas.'};
+  A.innerHTML=bar+'<div class="tb"><button class="lk" data-a="home">← Volver al inicio</button><span>Corregir una nota</span></div><div class="cs"><h2>Corregir esta nota</h2><p class="sub">Cambia cualquier categoría en el panel de la derecha y guarda. Queda en el historial y se puede deshacer.</p>'+split(r,{},[],{edit:1,btn:false,hints:hn})+'<div class="ac"><button class="b k big" data-a="savepanel">Guardar cambios</button><button class="b o big" data-a="home">Listo, volver</button></div></div>';bind();return}
  if(MODE==='review'){
   const Q=queue();
   if(!Q.length){const sk=vis().filter(x=>(RF==='all'||x.rule===RF)&&SK.has(x.key)).length;
@@ -325,10 +330,11 @@ function draw(){
  /* inicio */
  const bad=new Set();V.forEach(x=>{if(x.rule!=='cd')(x.all||x.rows).forEach(r=>bad.add(r.ID))});const pct=live.length?Math.max(0,Math.round(100*(1-bad.size/live.length))):100;
  const ig=ISS.filter(x=>IGN.has(hk(x.key))).length;
+ const srch='<div class="hero" style="padding:16px;margin-bottom:14px;text-align:left"><b>🔎 ¿Quieres corregir una nota en particular?</b><p style="margin:4px 0 8px;font-size:13px">Búscala por titular o medio y cambia cualquier categoría (criterio, eje, origen, ámbito, etiqueta).</p><input id="q" style="width:100%" placeholder="Escribe parte del titular o del medio…"><div id="qr"></div></div>';
  let h=bar+'<div class="tiles"><div class="tl"><b>'+live.length.toLocaleString('es-PE')+'</b><span>Menciones revisadas</span></div><div class="tl"><b>'+V.length+'</b><span>Por revisar</span></div><div class="tl"><b>'+pct+'%</b><span>En buen estado</span></div></div>';
  if(!V.length)h+='<div class="hero"><h2>✅ Todo está bien</h2><p>No encontré nada que corregir en estas '+live.length.toLocaleString('es-PE')+' menciones.'+(ig?'<br>Hay '+ig+' caso'+(ig>1?'s':'')+' que dejaste como estaba.':'')+'</p>'+(ig?'<button class="b o" data-a="unign">Volver a mostrar (solo ahora) los que dejé como están</button>':'')+'</div>';
  else{h+='<div class="hero"><h2>Encontré '+V.length+' cosa'+(V.length>1?'s':'')+' para revisar</h2><p>Te las muestro <b>una por una</b>, con una pregunta simple y botones claros. Todavía no se cambió nada.</p><button class="b big" data-a="start" data-r="all">Empezar la revisión</button></div><div class="ls">'+ORDER.filter(k=>cnt[k]).map(k=>'<div class="li"><div><b>'+NAMES[k][0]+' '+NAMES[k][1]+'</b><small>'+cnt[k]+' caso'+(cnt[k]>1?'s':'')+'</small></div><button class="b o s" data-a="start" data-r="'+k+'">Revisar solo esto</button></div>').join('')+'</div>'+(ig?'<button class="lk" data-a="unign">Volver a mostrar (solo ahora) los '+ig+' que dejé como están</button>':'')+'<div><button class="lk" data-a="csv">Descargar lista de observaciones (CSV)</button></div>'}
- A.innerHTML=h;bind();
+ A.innerHTML=h+srch;bind();
 }
 let RGV='30';
 function bind(){const g=$('#go');if(g)g.onclick=()=>{const s=$('#rg');if(s)RGV=s.value;MODE='home';SK=new Set();load()};const h=$('#hb');if(h)h.onclick=()=>{$('#hs').hidden=false;hist()}}
@@ -358,14 +364,18 @@ const disc=(rows,desc)=>apply(rows.map(r=>({id:r.ID,set:{ELIMINADA:'1'}})),rows.
 $('#tu').onclick=undo;
 const closeV=()=>{$('#vw').hidden=true;$('#vf').src='about:blank';document.body.classList.remove('vo')};$('#vx').onclick=closeV;
 $('#hx').onclick=()=>{$('#hs').hidden=true};
-document.addEventListener('change',e=>{const t=e.target;if(t.classList&&t.classList.contains('ps')&&t.dataset.p==='TONO')t.setAttribute('style',toneStyle(t.value))});
+document.addEventListener('change',e=>{const t=e.target;if(t.classList&&(t.classList.contains('ps')||t.classList.contains('pn'))&&t.dataset.p==='TONO')t.setAttribute('style',toneStyle(t.value))});
 $('#hl').onclick=e=>{const b=e.target.closest('[data-u]');if(b){b.disabled=true;undoAt(+b.dataset.u)}};
+$('#app').addEventListener('input',e=>{if(e.target.id!=='q')return;const t=nt(e.target.value).split(' ').filter(w=>w.length>1),o=$('#qr');if(!t.length){o.innerHTML='';return}
+ const L=ROWS.filter(r=>!r._del&&isV(r)&&!isCD(r)&&(x=>t.every(w=>x.includes(w)))(nt(r.TITULAR+' '+r.MEDIO))).sort((a,b)=>(b._d||0)-(a._d||0)).slice(0,12);
+ o.innerHTML=L.length?'<div class="ls">'+L.map(r=>'<div class="li"><div><b>'+esc(r.MEDIO)+'</b> · '+fmtD(r)+'<small>'+esc(r.TITULAR)+'</small></div><button class="b o s" data-a="one" data-id="'+esc(r.ID)+'">Abrir</button></div>').join('')+'</div>':'<div class="hint" style="margin-top:8px">No encontré notas validadas con eso en este periodo.</div>'});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeV();$('#hs').hidden=true}});
 $('#app').addEventListener('click',async e=>{
  const v=e.target.closest('[data-v]');if(v){openNote(byId(v.dataset.v));return}
  const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,c=b.closest('.cs'),it=CUR,val=k=>{const s=c&&c.querySelector('[data-k="'+k+'"]');return s?s.value:''};
  if(a==='start'){RF=b.dataset.r;SK=new Set();MODE='review';TOT=queue().length;draw();window.scrollTo(0,0);return}
  if(a==='home'){MODE='home';draw();return}
+ if(a==='one'){ONE=b.dataset.id;MODE='one';draw();window.scrollTo(0,0);return}
  if(a==='again'){SK=new Set();TOT=queue().length;draw();return}
  if(a==='unign'){ISS.forEach(x=>IGN.delete(hk(x.key)));saveIgn();draw();return}
  if(a==='csv'){exportCsv();return}
@@ -376,6 +386,9 @@ $('#app').addEventListener('click',async e=>{
  try{
   if(a==='keep'){const keep=it.rows.find(r=>r.ID===b.dataset.id),d=it.rows.filter(r=>r.ID!==b.dataset.id);ok=await disc(d,'Te quedaste con «'+keep.MEDIO+'» · se descartó '+d.length+' repetida'+(d.length>1?'s':''))}
   else if(a==='savepanel'){const r=it.rows[0],f={},old={};c.querySelectorAll('.ps').forEach(sl=>{const k=sl.dataset.p,x=sl.value,o=sl.dataset.o;if(x!==o&&(x||k==='ETIQUETA')){f[k]=x;old[k]=r[k]??''}});
+   if(!Object.keys(f).length){alert('No cambiaste nada todavía.');return}
+   ok=await apply([{id:r.ID,set:f}],[{id:r.ID,set:old}],'Cambiado ('+Object.keys(f).map(k=>PL[k].toLowerCase()).join(', ')+') en «'+r.MEDIO+'»')}
+  else if(a==='savenote'){const r=byId(b.dataset.id),f={},old={};c.querySelectorAll('.pn[data-id="'+b.dataset.id+'"]').forEach(sl=>{const k=sl.dataset.p,x=sl.value,o=sl.dataset.o;if(x!==o&&(x||k==='ETIQUETA')){f[k]=x;old[k]=r[k]??''}});
    if(!Object.keys(f).length){alert('No cambiaste nada todavía.');return}
    ok=await apply([{id:r.ID,set:f}],[{id:r.ID,set:old}],'Cambiado ('+Object.keys(f).map(k=>PL[k].toLowerCase()).join(', ')+') en «'+r.MEDIO+'»')}
   else if(a==='del'){const d=it.rows.filter(r=>r.ID===b.dataset.id);ok=await disc(d,'Descartada 1 nota repetida')}

@@ -56,6 +56,13 @@ a.lk,.lk{background:none;border:0;color:#2563eb;font-weight:700;font-size:13px;p
 @media(min-width:901px){body.vo .main{margin:0;max-width:none;width:calc(100vw - min(52vw,900px))}}
 @media(max-width:900px){#vw{top:auto;left:0;width:100%;height:82vh;border-radius:16px 16px 0 0}}
 @media(max-width:600px){h1{font-size:14px}.tiles{gap:6px}.tl b{font-size:22px}.hero{padding:20px 14px}.hero h2{font-size:19px}.ac .b{flex:1 1 100%}}
+.tp{font-size:11px;font-weight:800;border-radius:8px;padding:3px 9px}
+.split{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(220px,1fr);gap:12px;margin-bottom:12px;align-items:start}
+.fp{border:2px solid var(--bd);border-radius:14px;padding:12px 13px;background:#faf7f8}.fp h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;color:var(--mu);letter-spacing:.3px}
+.fr{padding:7px 9px;border-radius:9px;margin-bottom:5px;font-size:13px;font-weight:600;position:relative}.fr small{display:block;font-size:10.5px;color:var(--mu);font-weight:800;text-transform:uppercase;margin-bottom:2px}
+.fr.hi{background:#fffbeb;border:1.5px solid #f59e0b}.fr em{display:block;margin-top:3px;font-size:11px;font-style:normal;font-weight:800;color:#b45309}
+.e{color:#dc2626;font-weight:800}
+@media(max-width:760px){.split{grid-template-columns:1fr}}
 </style></head><body>
 <header><div><h1>Revisión de datos</h1><div class="sb">PRESIDENCIA DE LA REPÚBLICA DEL PERÚ · Equipo de monitoreo</div></div><div id="st"></div></header>
 <div class="main">
@@ -78,7 +85,7 @@ const LBL={TONO:'Criterio de imagen',EJE:'Eje de gestión',ORIGEN:'Origen de pos
 const RULES={
  cd:['Canales digitales (eliminar)','alta'],dup:['Duplicados','alta'],falt:['Faltan datos','alta'],val:['Opción mal escrita','alta'],
  sus:['Categoría dudosa','media'],res:['Resumen','media'],var:['Escrito distinto','media'],
- fec:['Fecha','alta'],out:['Valor atípico','media'],tit:['Titular','baja'],pen:['Pendientes antiguas','media']};
+ fec:['Fecha','alta'],out:['Valor atípico','media'],tit:['Titular','baja']};
 let USER='';try{USER=localStorage.getItem('usr')||''}catch(e){}
 if(!USER){USER=prompt('¿Tu nombre? (queda registrado en cada cambio)')||'anónimo';try{localStorage.setItem('usr',USER)}catch(e){}}
 let ROWS=[],TAGS=[],ISS=[],IGN=new Set(),UND=[],F='all',SHI=false,DONE=0,SHOW=40;
@@ -179,7 +186,7 @@ async function load(){
 }
 /* ---------- detección ---------- */
 function detect(){
- const live=ROWS.filter(r=>!r._del),CD=live.filter(isCD),A=live.filter(r=>!isCD(r)),I=[];
+ const live=ROWS.filter(r=>!r._del&&isV(r)),CD=live.filter(isCD),A=live.filter(r=>!isCD(r)),I=[];
  const add=(rule,sev,title,rows,extra)=>{const ids=rows.map(r=>r.ID).sort().join(',');I.push(Object.assign({rule,sev,title,rows,key:rule+'|'+(extra&&extra.k||'')+'|'+ids},extra||{}))};
  const inDup=new Set();
  /* 0. canales digitales: no se monitorean */
@@ -225,20 +232,23 @@ function detect(){
   Object.entries(g).forEach(([t,L])=>{if(L.length<10)return;const vs=L.map(x=>x[0]),q1=q(vs,.25),q3=q(vs,.75),hi=q3+3*(q3-q1);L.forEach(([v,r])=>{if(v>hi&&v>q3*3)add('out','media',l+' muy alta en '+t+': '+v.toLocaleString('es-PE'),[r],{ro:1,k:k,why:'Lo normal en '+t+' llega hasta '+Math.round(q3).toLocaleString('es-PE')+'. Revisa que no sobren ceros.'})})})});
  /* 10. titulares */
  A.forEach(r=>{const t=String(r.TITULAR||'').trim();let m='';if(t.length<15)m='Titular muy corto («'+t+'»)';else if(t.length>250)m='Titular demasiado largo ('+t.length+' caracteres)';else{const L=t.replace(/[^A-Za-zÁÉÍÓÚÑ]/g,'');if(L.length>25&&L.replace(/[^A-ZÁÉÍÓÚÑ]/g,'').length/L.length>.8)m='Titular todo en mayúsculas'}if(m)add('tit','baja',m,[r],{ro:1})});
- /* 11. pendientes antiguas */
- A.forEach(r=>{if(!isV(r)&&r._d&&now-r._d.getTime()>3*864e5)add('pen','media','Sin validar hace '+Math.floor((now-r._d.getTime())/864e5)+' días',[r],{ro:1})});
  ISS=I;draw();
 }
 function rank(x){const sc=r=>(isV(r)?4:0)+['TONO','EJE','ORIGEN','AMBITO','ETIQUETA'].filter(k=>String(r[k]||'').trim()).length+(/lima/i.test(String(r.REGION||'')+' '+r.MEDIO)?1:0);return x.slice().sort((a,b)=>sc(b)-sc(a)||(a._d||0)-(b._d||0))}
 /* ====================== INTERFAZ SIMPLE: un caso a la vez ====================== */
 let MODE='home',SK=new Set(),TOT=0,CUR=null,RF='all';
-const NAMES={cd:['📺','Canales digitales (no se monitorean)'],dup:['🔁','Posibles notas repetidas'],falt:['📝','Notas validadas con datos sin llenar'],val:['✏️','Opciones mal escritas'],sus:['🤔','Categorías que parecen equivocadas'],res:['📄','Resúmenes vacíos o raros'],var:['🔤','Cosas escritas de dos maneras'],fec:['📅','Fechas raras'],out:['📈','Montos raros'],tit:['🏷️','Titulares raros'],pen:['⏳','Pendientes de validar hace varios días']};
+const NAMES={cd:['📺','Canales digitales (no se monitorean)'],dup:['🔁','Posibles notas repetidas'],falt:['📝','Notas validadas con datos sin llenar'],val:['✏️','Opciones mal escritas'],sus:['🤔','Categorías que parecen equivocadas'],res:['📄','Resúmenes vacíos o raros'],var:['🔤','Cosas escritas de dos maneras'],fec:['📅','Fechas raras'],out:['📈','Montos raros'],tit:['🏷️','Titulares raros']};
 const ORDER=Object.keys(NAMES);
 const vis=()=>ISS.filter(x=>!IGN.has(x.key));
 const queue=()=>vis().filter(x=>(RF==='all'||x.rule===RF)&&!SK.has(x.key)).sort((a,b)=>ORDER.indexOf(a.rule)-ORDER.indexOf(b.rule));
 const byId=id=>ROWS.find(r=>r.ID===id);
 /* ---------- piezas ---------- */
-function noteCard(r,o){o=o||{};const em=k=>String(r[k]||'').trim()?'<span>'+esc(r[k])+'</span>':'<span class="e">sin '+({TONO:'criterio',EJE:'eje',ORIGEN:'origen',AMBITO:'ámbito'}[k])+'</span>';
+const TC={Positiva:'#dcfce7;color:#166534;border:1px solid #86efac',Neutra:'#fef9c3;color:#854d0e;border:1px solid #fde047',Negativa:'#fee2e2;color:#991b1b;border:1px solid #fca5a5'};
+const tonePill=v=>v?'<span class="tp" style="background:'+(TC[v]||'#f3f0f1')+'">'+esc(v)+'</span>':'<span class="e">sin criterio</span>';
+function fieldsPanel(r,hi){hi=hi||[];const row=(k,l,html)=>'<div class="fr'+(hi.indexOf(k)>-1?' hi':'')+'"><small>'+l+'</small><div>'+html+'</div>'+(hi.indexOf(k)>-1?'<em>← aquí</em>':'')+'</div>',v=k=>String(r[k]||'').trim(),t=k=>v(k)?esc(v(k)):'<span class="e">falta</span>';
+ return'<div class="fp"><h4>Datos de la nota</h4>'+row('TONO','Criterio de imagen',v('TONO')?tonePill(v('TONO')):'<span class="e">falta</span>')+row('EJE','Eje de gestión',t('EJE'))+row('ORIGEN','Origen',t('ORIGEN'))+row('AMBITO','Ámbito',t('AMBITO'))+row('ETIQUETA','Etiqueta',v('ETIQUETA')?esc(v('ETIQUETA')):'<span style="color:#9ca3af">ninguna</span>')+'</div>'}
+const split=(r,o,hi)=>'<div class="split">'+noteCard(r,Object.assign({noF:1},o||{}))+fieldsPanel(r,hi)+'</div>';
+function noteCard(r,o){o=o||{};const em=k=>k==='TONO'&&String(r[k]||'').trim()?tonePill(r[k]):String(r[k]||'').trim()?'<span>'+esc(r[k])+'</span>':'<span class="e">sin '+({TONO:'criterio',EJE:'eje',ORIGEN:'origen',AMBITO:'ámbito'}[k])+'</span>';
  const res=String(r.RESUMEN||'').trim();
  return'<div class="nc'+(o.rec?' rec':'')+'"><div class="nm"><b>'+esc(r.MEDIO)+'</b><span>'+esc(r.TIPO)+' · '+fmtD(r)+'</span><span class="bd '+(isV(r)?'v':'p')+'">'+(isV(r)?'Validada':'Pendiente')+'</span>'+(o.rec?'<span class="bd r">Sugerida: la más completa</span>':'')+'</div>'+
  '<div class="nt">'+(o.hl||esc(r.TITULAR))+'</div>'+(res?'<div class="ns">'+(o.hlr||esc(res))+'</div>':'<div class="ns" style="color:#dc2626">Sin resumen</div>')+
@@ -270,29 +280,29 @@ function caseHTML(it){
   h='<h2>Estas filas son de canales digitales</h2><p class="sub">El monitoreo no incluye canales digitales ni redes. Son <b>'+it.rows.length+'</b>. Si quieres, puedes descartarlas todas de una vez.</p><div class="nts">'+it.rows.slice(0,6).map(r=>noteCard(r,{noF:1})).join('')+'</div>'+(it.rows.length>6?'<div class="hint">…y '+(it.rows.length-6)+' más.</div>':'')+
    '<div class="ac"><button class="b k big" data-a="cdall">Descartar las '+it.rows.length+'</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='falt'){
-  h='<h2>A esta nota le faltan datos</h2><p class="sub">Está <b>validada</b> pero no tiene: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Sin eso no sale bien en el dashboard.</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><div class="fl">'+
+  h='<h2>A esta nota le faltan datos</h2><p class="sub">Está <b>validada</b> pero no tiene: <b>'+it.miss.map(k=>LBL[k]).join(', ')+'</b>. Sin eso no sale bien en el dashboard.</p>'+split(r0,{},it.miss)+'<div class="fl">'+
    it.miss.map(k=>{const s=k==='TONO'?null:sugg(r0,k),ok=s&&s.w>=(k==='AMBITO'?3:4);return'<label>'+LBL[k]+'<select data-k="'+k+'"><option value="">Elegir…</option>'+FLD[k].map(o=>'<option'+(ok&&o===s.v?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select><span class="sg">'+(k==='TONO'?'Léela y elige el criterio de imagen.':ok?'Sugerencia: <b>'+esc(s.v)+'</b>'+(s.terms.length?' (el texto menciona '+s.terms.map(t=>'«'+esc(t)+'»').join(', ')+')':''):'Sin sugerencia clara: elige según la nota.')+'</span></label>'}).join('')+'</div>'+
    '<div class="ac"><button class="b k big" data-a="save">Guardar</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='val'){
-  h='<h2>Una opción está mal escrita</h2><p class="sub">En <b>'+LBL[it.field]+'</b> pusieron «<b>'+esc(it.val)+'</b>», pero esa opción no existe en el formulario ('+it.all.length+' fila'+(it.all.length>1?'s':'')+').</p><div class="nts">'+it.rows.slice(0,2).map(r=>noteCard(r,{noF:1})).join('')+'</div>'+(it.all.length>2?'<div class="hint">…y '+(it.all.length-2)+' más con lo mismo. Se corrigen todas juntas.</div>':'')+
+  h='<h2>Una opción está mal escrita</h2><p class="sub">En <b>'+LBL[it.field]+'</b> pusieron «<b>'+esc(it.val)+'</b>», pero esa opción no existe en el formulario ('+it.all.length+' fila'+(it.all.length>1?'s':'')+').</p>'+split(it.rows[0],{},[it.field])+(it.all.length>1?'<div class="hint">…y '+(it.all.length-1)+' más con lo mismo. Se corrigen todas juntas.</div>':'')+
    '<div class="fl"><label>¿Cuál es la opción correcta?<select data-k="'+it.field+'"><option value="">Elegir…</option>'+FLD[it.field].map(o=>'<option'+(o===it.sug?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="saveall">Corregir '+it.all.length+'</button></div>'+foot(btnLeave.replace('class="b o"','class="b o s"'));
  }else if(rule==='sus'){
-  h='<h2>¿Esta categoría está bien?</h2><p class="sub">Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero '+(it.terms.length?'el texto parece hablar de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).')+'</p><div class="nts">'+noteCard(r0,{hl:hlTerms(r0.TITULAR,it.terms),hlr:hlTerms(r0.RESUMEN,it.terms)})+'</div>'+
+  h='<h2>¿Esta categoría está bien?</h2><p class="sub">Está como <b>'+esc(it.cur)+'</b> en <b>'+LBL[it.field]+'</b>, pero '+(it.terms.length?'el texto parece hablar de <b>'+esc(it.sug)+'</b> (menciona '+it.terms.map(t=>'«'+esc(t)+'»').join(', ')+').':'en este medio casi siempre es <b>'+esc(it.sug)+'</b> ('+it.medio+' notas).')+'</p>'+split(r0,{hl:hlTerms(r0.TITULAR,it.terms),hlr:hlTerms(r0.RESUMEN,it.terms)},[it.field])+
    '<div class="fl"><label>Cambiar a<select data-k="'+it.field+'">'+[it.sug,...FLD[it.field].filter(o=>o!==it.sug)].map(o=>'<option>'+esc(o)+'</option>').join('')+'</select></label></div><div class="ac"><button class="b k big" data-a="save">Cambiar</button><button class="b o big" data-a="ign">Está bien así</button></div>'+foot();
  }else if(rule==='res'){
-  h='<h2>El resumen necesita revisión</h2><p class="sub">Problema: <b>'+esc(it.title.toLowerCase())+'</b>.</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><textarea data-k="RESUMEN" placeholder="Escribe el resumen aquí">'+esc(r0.RESUMEN)+'</textarea><div class="ac"><button class="b k big" data-a="saveres">Guardar resumen</button>'+btnLeave+'</div>'+foot();
+  h='<h2>El resumen necesita revisión</h2><p class="sub">Problema: <b>'+esc(it.title.toLowerCase())+'</b>.</p>'+split(r0,{},[])+'<textarea data-k="RESUMEN" placeholder="Escribe el resumen aquí">'+esc(r0.RESUMEN)+'</textarea><div class="ac"><button class="b k big" data-a="saveres">Guardar resumen</button>'+btnLeave+'</div>'+foot();
  }else if(rule==='var'){
   h='<h2>Lo mismo está escrito de varias maneras</h2><p class="sub">En <b>'+esc(LBL[it.field]||it.field)+'</b> se cuenta por separado en los gráficos.'+(it.edit?' Elige la forma correcta y se unifican todas.':' Este campo se corrige en el Google Sheet; aquí solo te aviso.')+'</p><div class="nc">'+it.forms.map((f,j)=>(it.edit?'<label style="font-weight:700;display:block;margin:4px 0"><input type="radio" name="uf" value="'+esc(f[0])+'"'+(j?'':' checked')+'> ':'<div style="margin:4px 0">')+'«'+esc(f[0])+'» <span class="hint">'+f[1]+' fila'+(f[1]>1?'s':'')+'</span>'+(it.edit?'</label>':'</div>')).join('')+'</div><div class="ac">'+(it.edit?'<button class="b k big" data-a="unify">Unificar</button>':'')+'<button class="b o big" data-a="ign">'+(it.edit?'Dejar como está':'Entendido')+'</button></div>'+foot();
  }else{
-  const ex=rule==='fec'?'Esta columna se corrige en el Google Sheet, no aquí.':rule==='pen'?'Valídala o descártala desde el formulario.':rule==='out'?(it.why||''):'Solo es un aviso: corrígelo en el formulario o en el Sheet si hace falta.';
-  h='<h2>'+esc(it.title)+'</h2><p class="sub">'+esc(ex)+'</p><div class="nts">'+noteCard(r0,{noF:1})+'</div><div class="ac"><button class="b o big" data-a="ign">Entendido, siguiente</button></div>';
+  const ex=rule==='fec'?'Esta columna se corrige en el Google Sheet, no aquí.':rule==='out'?(it.why||''):'Solo es un aviso: corrígelo en el formulario o en el Sheet si hace falta.';
+  h='<h2>'+esc(it.title)+'</h2><p class="sub">'+esc(ex)+'</p>'+split(r0,{},[])+'<div class="ac"><button class="b o big" data-a="ign">Entendido, siguiente</button></div>';
  }
  return'<div class="cs" data-k="'+esc(it.key)+'">'+h+'</div>';
 }
 /* ---------- pantallas ---------- */
 function draw(){
- const A=$('#app'),live=ROWS.filter(r=>!r._del&&!isCD(r)),V=vis(),cnt={};V.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
- if(!ROWS.length){A.innerHTML='<div class="hero"><h2>Revisemos que todo esté bien 🧹</h2><p>Elige el periodo y pulsa el botón. Voy a buscar notas repetidas, datos sin llenar y categorías dudosas.<br><b>Todavía no se cambia nada.</b></p><div class="pick"><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select><button class="b big" id="go">Revisar mis datos</button></div></div>';bind();return}
+ const A=$('#app'),live=ROWS.filter(r=>!r._del&&isV(r)&&!isCD(r)),V=vis(),cnt={};V.forEach(x=>cnt[x.rule]=(cnt[x.rule]||0)+1);
+ if(!ROWS.length){A.innerHTML='<div class="hero"><h2>Revisemos que todo esté bien 🧹</h2><p>Elige el periodo y pulsa el botón. Reviso solo las notas <b>ya validadas</b> (las pendientes todavía no se tocan). Voy a buscar notas repetidas, datos sin llenar y categorías dudosas.<br><b>Todavía no se cambia nada.</b></p><div class="pick"><select id="rg"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select><button class="b big" id="go">Revisar mis datos</button></div></div>';bind();return}
  const bar='<div class="pick" style="justify-content:flex-start;margin-bottom:12px"><select id="rg"><option value="7"'+(RGV==='7'?' selected':'')+'>Últimos 7 días</option><option value="30"'+(RGV==='30'?' selected':'')+'>Últimos 30 días</option><option value="90"'+(RGV==='90'?' selected':'')+'>Últimos 90 días</option><option value="0"'+(RGV==='0'?' selected':'')+'>Todo el historial</option></select><button class="b o s" id="go">Revisar de nuevo</button><button class="b o s" id="hb">↩ Lo que hice (deshacer)</button></div>';
  if(MODE==='review'){
   const Q=queue();
